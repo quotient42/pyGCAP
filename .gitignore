@@ -11,3 +11,6 @@ result_rep_seq.fasta
 /output/tmp/PIM
 *.xml
 /test
+project_info.tsv
+all.fasta
+lacto.aa.*

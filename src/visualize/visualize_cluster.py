@@ -51,7 +51,7 @@ def plot_subplot(ax, gene_data, bar_id):
     ax.set_yticks([0])
     ax.set_yticklabels([bar_id])
 
-    ax.set_xlim(0, 500)
+    ax.set_xlim(0, 400)
     ax.set_xticks([])
 
     return handles
