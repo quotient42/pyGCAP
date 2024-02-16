@@ -1,0 +1,2 @@
+Project_Name	Root_Dir	Input_Dir	Output_Dir	Data_Dir	Seqlib_Dir
+new project	../../test	../../test/input	../../test/output	../../test/data	../../test/seqlib

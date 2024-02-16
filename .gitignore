@@ -1,0 +1,13 @@
+__pycache__
+result_all_seqs.fasta
+protein_seq.faa
+result_cluster.tsv
+result_rep_seq.fasta
+*.gff
+*.gbff
+.DS_Store
+/output/GCF*
+/src/seqlib/tmp
+/output/tmp/PIM
+*.xml
+/test
