@@ -62,12 +62,18 @@ def check_block(contig_groups, df_cluster):
 
     return df_cluster
 
+def update_prediction(row, df_dcw):
+    protein_id = row['protein_id']
+    matching_rows = df_dcw[df_dcw['protein_id'] == protein_id]['Prediction']
+    prediction = matching_rows.iloc[0] if not matching_rows.empty else '----'
+    return prediction
+
 def search_cluster_main(input_info, genome_summary, target_summary):
     df_gff = genome_summary
     df_dcw = target_summary
 
     df_gff['Prediction'] = '----'
-    df_gff['Prediction'] = df_gff['protein_id'].map(df_dcw.set_index('protein_id')['Prediction']).fillna('----')
+    df_gff['Prediction'] = df_gff.apply(update_prediction, df_dcw=df_dcw, axis=1).fillna('----')
 
     contig_groups = df_gff[df_gff['Prediction'] != '----'].groupby('contig').filter(lambda x: len(x) >= 2)['contig'].unique()
     df_cluster = df_gff[df_gff['contig'].isin(contig_groups)].reset_index(drop=True)
