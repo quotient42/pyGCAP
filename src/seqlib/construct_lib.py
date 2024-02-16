@@ -1,8 +1,7 @@
-import os
 import pandas as pd
-import time
 
 def construct_lib(project_info):
+		print("<< creating seqlib...")
 		seqlib_dir = project_info['seqlib']
 		data_dir = project_info['data']
 
@@ -18,7 +17,6 @@ def construct_lib(project_info):
 		seq_df = seq_df.sort_values('RepSeq_tmp')
 		seq_df['Prediction'] = pd.Series([], dtype=object)
 
-		start_time = time.time()
 
 		target_text = pd.read_csv(f"{seqlib_dir}/seqlib_rep.tsv", sep='\t', comment='#')
 		target_text['repseq_tmp'] = target_text['repseq'].apply(lambda x: float(x.replace('WP_', '')))
@@ -41,7 +39,3 @@ def construct_lib(project_info):
 		seq_df = seq_df.sort_values('Prediction')
 
 		seq_df.to_csv(f"{seqlib_dir}/seqlib.tsv", sep='\t', index=False)
-
-		end_time = time.time()
-		total = end_time - start_time
-		print(f"   seqlib created (elapsed time: {round(total / 60, 3)} min)")

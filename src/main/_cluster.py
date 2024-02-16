@@ -34,7 +34,7 @@ def cluster_target(project_info):
             if not "GCF" in accession:
                 continue
             progress += 1
-            print(f"   ├── processing... ({progress}/{input_len}): {accession}") 
+            # print(f"   ├── processing... ({progress}/{input_len}): {accession}") 
             
             cur_dir = f"{input_dir}/{genus}/{accession}"
 
@@ -49,7 +49,7 @@ def cluster_target(project_info):
             cluster_summary = search_cluster_main(input_info, genome_summary, target_list)
             adjust_cluster_main(input_info, cluster_summary, f"{path}/tmp")
 
-        print(f"   └── drawing cluster of {genus}...")
+        print(f"   ├── drawing cluster of {genus}...")
         visualize_cluster(f"{path}/tmp", f"{output_dir}/genus", genus)
 
     end_time = time.time()

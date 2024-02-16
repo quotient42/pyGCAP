@@ -28,7 +28,7 @@ def search_target_seq(project_info):
             if not "GCF" in accession:
                 continue
             progress += 1
-            print(f"   ├── searching... ({progress}/{input_len}): {accession}") 
+            # print(f"   ├── searching... ({progress}/{input_len}): {accession}") 
             
             cur_dir = f"{input_dir}/{genus}/{accession}"
 

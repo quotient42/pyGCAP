@@ -75,5 +75,5 @@ def classify_target_cluster(project_info):
 
 	end_time = time.time()
 	total = end_time - start_time
-	print(f"   └── all done (elapsed time: {round(total / 60, 3)} min)")
+	print(f"   └── classification done (elapsed time: {round(total / 60, 3)} min)")
 	print("----------------------------------------------------------")

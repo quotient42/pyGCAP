@@ -1,4 +1,4 @@
-import pandas as pd
+import time
 import sys
 
 sys.path.append("../cluster/")
@@ -28,14 +28,20 @@ with open("./project_info.tsv", 'r') as file:
         'seqlib': project_info_data[5]
 		}
 
+start_time = time.time()
+
 input_len = parse_assembly_report(project_info)
 project_info['input_len'] = input_len
 organize_input_dir(project_info)
 
 project_info['input_len'] = 696
 # parse_genome_data(project_info)
-# create_seqlib(project_info)
-# search_target_seq(project_info)
-# count_target(project_info)
+create_seqlib(project_info)
+search_target_seq(project_info)
+count_target(project_info)
 cluster_target(project_info)
 classify_target_cluster(project_info)
+
+end_time = time.time()
+total = end_time - start_time
+print(f"ALL DONE (elapsed time: {round(total / 60, 3)} min)")

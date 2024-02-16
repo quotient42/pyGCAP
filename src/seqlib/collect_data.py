@@ -1,21 +1,17 @@
 import pandas as pd
-import time
 import os
 
 def collect_target_data(project_info):
+    print("<< collecting fasta data...")
     input_dir = project_info['input']
-    input_len = project_info['input_len']
+    seqlib_dir = project_info['seqlib']
     all_directories = [d for d in os.listdir(input_dir) if os.path.isdir(os.path.join(input_dir, d))]
     all_directories = [d for d in all_directories if d != 'output' and not d.startswith('output/')]
-
-    progress = 0
 
     for genus in all_directories:
         for accession in os.listdir(os.path.join(input_dir, genus)):
             if not "GCF" in accession:
                 continue
-            progress += 1
-            print(f"   ├── processing... ({progress}/{input_len}): {accession}") 
             
             cur_dir = f"{input_dir}/{genus}/{accession}"
 
@@ -39,4 +35,8 @@ def collect_target_data(project_info):
                     for i in range(0, len(translation), 50):
                         fasta_file.write(f"{translation[i:i+50]}\n")
 
-		
+            with open(output_file, 'r') as fasta_file:
+                fasta_content = fasta_file.read()
+                with open(f'{seqlib_dir}/all.fasta', 'a') as all_fasta_file:
+                    all_fasta_file.write(fasta_content)
+            
