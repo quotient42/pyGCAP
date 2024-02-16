@@ -15,7 +15,7 @@ def search_target_seq(project_info):
     all_directories = [d for d in all_directories if d != 'output' and not d.startswith('output/')]
 
     seq_lib = pd.read_csv(f"{project_info['seqlib']}/seqlib.tsv", sep='\t')
-    seq_lib['prediction'] = seq_lib['prediction'].astype(str)
+    seq_lib['Prediction'] = seq_lib['Prediction'].astype(str)
     seq_lib['RepSeq'] = seq_lib['RepSeq'].astype(str)
     seq_lib['Total'] = seq_lib['Total'].astype(int)
     seq_lib['Seq_List'] = seq_lib['Seq_List'].astype(str)

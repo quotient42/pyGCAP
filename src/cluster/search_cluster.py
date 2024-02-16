@@ -8,9 +8,9 @@ def check_contig(contig_groups, df_cluster):
         while cur_index < len(contig_group_rows):
             cur_row = contig_group_rows.iloc[cur_index]
 
-            if cur_row['prediction'] != '----':
+            if cur_row['Prediction'] != '----':
                 neighbor_index = cur_index + 1
-                while neighbor_index < len(contig_group_rows) and contig_group_rows.iloc[neighbor_index]['prediction'] == '----':
+                while neighbor_index < len(contig_group_rows) and contig_group_rows.iloc[neighbor_index]['Prediction'] == '----':
                     neighbor_index += 1
 
                 if neighbor_index < len(contig_group_rows):
@@ -58,7 +58,7 @@ def check_block(contig_groups, df_cluster):
 
             cur_index += 1
 
-    df_cluster = df_cluster[(df_cluster['prediction'] != '----') | (df_cluster['cluster'])]
+    df_cluster = df_cluster[(df_cluster['Prediction'] != '----') | (df_cluster['cluster'])]
 
     return df_cluster
 
@@ -66,16 +66,16 @@ def search_cluster_main(input_info, genome_summary, target_summary):
     df_gff = genome_summary
     df_dcw = target_summary
 
-    df_gff['prediction'] = '----'
-    df_gff['prediction'] = df_gff['protein_id'].map(df_dcw.set_index('protein_id')['prediction']).fillna('----')
+    df_gff['Prediction'] = '----'
+    df_gff['Prediction'] = df_gff['protein_id'].map(df_dcw.set_index('protein_id')['Prediction']).fillna('----')
 
-    contig_groups = df_gff[df_gff['prediction'] != '----'].groupby('contig').filter(lambda x: len(x) >= 2)['contig'].unique()
+    contig_groups = df_gff[df_gff['Prediction'] != '----'].groupby('contig').filter(lambda x: len(x) >= 2)['contig'].unique()
     df_cluster = df_gff[df_gff['contig'].isin(contig_groups)].reset_index(drop=True)
 
     df_cluster = check_contig(contig_groups, df_cluster)
     df_cluster = check_block(contig_groups, df_cluster)
     
-    key_order = ["contig", "protein_id", "prediction", "cluster", "block", "strand", "start", "end"]
+    key_order = ["contig", "protein_id", "Prediction", "cluster", "block", "strand", "start", "end"]
     df_cluster = df_cluster[key_order]
 
     cluster_summary = f"{input_info[1]}/target_cluster.tsv"

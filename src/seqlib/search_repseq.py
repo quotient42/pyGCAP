@@ -9,7 +9,7 @@ def search_repseq(project_info):
 	seq_df['subseq'] = seq_df['subseq'].apply(lambda x: float(x.replace('WP_', '')))
 	seq_df = seq_df.sort_values('subseq')
 
-	target_df = pd.read_csv(f"{seqlib_dir}/seqlib_data2.tsv", sep='\t')
+	target_df = pd.read_csv(f"{seqlib_dir}/blast_output2.tsv", sep='\t')
 	target_df['Accession_tmp'] = target_df['Accession'].apply(lambda x: float(x.replace('WP_', '')))
 
 	target_df['repseq'] = "-"
@@ -29,5 +29,5 @@ def search_repseq(project_info):
 							high = mid - 1
 
 	target_df = target_df[target_df['repseq'] != '-']
-	target_df = target_df[['prediction', 'Accession', 'repseq']]
+	target_df = target_df[['Prediction', 'Accession', 'repseq', 'Query']]
 	target_df.to_csv(f"{seqlib_dir}/seqlib_rep.tsv", sep='\t', index=False)

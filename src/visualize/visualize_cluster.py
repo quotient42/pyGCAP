@@ -23,7 +23,7 @@ def collect_gene_data(main_df):
             bar_data[bar_id] = []
 
         gene_info = {
-            'prediction': row['prediction'],
+            'Prediction': row['Prediction'],
             'block': row['block'],
             'start': row['start'],
             'end': row['end'],
@@ -37,21 +37,21 @@ def plot_subplot(ax, gene_data, bar_id):
     handles = []
 
     for gene in gene_data:
-        if gene['prediction'] in target_color:
-            color_dict[gene['prediction']] = target_color[gene['prediction']]
+        if gene['Prediction'] in target_color:
+            color_dict[gene['Prediction']] = target_color[gene['Prediction']]
         else:
-            color_dict[gene['prediction']] = target_color['etc']
+            color_dict[gene['Prediction']] = target_color['etc']
 
         start = int(gene['start'])
         end = int(gene['end'])
         block = gene['block']
 
-        bar = ax.barh(0, width=end - start, left=start, height=0.2, color=color_dict[gene['prediction']], edgecolor='none')
+        bar = ax.barh(0, width=end - start, left=start, height=0.2, color=color_dict[gene['Prediction']], edgecolor='none')
 
     ax.set_yticks([0])
     ax.set_yticklabels([bar_id])
 
-    ax.set_xlim(0, 300)
+    ax.set_xlim(0, 500)
     ax.set_xticks([])
 
     return handles
@@ -103,7 +103,7 @@ def visualize_cluster(input_path, output_path, genus):
 		main_df['accession'] = accession
 		collected_df = collected_df._append(main_df, ignore_index=True)
 
-	collected_df = collected_df[['accession', 'block', 'prediction', 'start', 'end']]
+	collected_df = collected_df[['accession', 'block', 'Prediction', 'start', 'end']]
 
 	bar_data = collect_gene_data(collected_df)
 	fig = draw_cluster(bar_data, genus)

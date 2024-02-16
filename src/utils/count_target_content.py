@@ -7,7 +7,7 @@ def count_target_by_species(file_path, target_names):
 
     df = pd.read_csv(file_path, sep='\t', comment='#')
 
-    target_cnt = df['prediction'].value_counts().reset_index()
+    target_cnt = df['Prediction'].value_counts().reset_index()
     target_cnt.columns = ['protein', 'count']
 
     target_cnt = pd.DataFrame({'protein': target_names}).merge(target_cnt, on='protein', how='left').fillna(0)

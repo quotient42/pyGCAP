@@ -27,12 +27,12 @@ def search_target_by_seq_main(input_info, genome_summary, seq_lib):
     seq_lib_exploded = seq_lib_exploded.reset_index(drop=True)
 
     merged_df = df_gff[mask].merge(seq_lib_exploded, left_on='protein_id', right_on='Seq_List', how='inner')
-    merged_df = merged_df.drop_duplicates(subset=['prediction', 'contig', 'protein_id', 'strand', 'start', 'end'])
+    merged_df = merged_df.drop_duplicates(subset=['Prediction', 'contig', 'protein_id', 'strand', 'start', 'end'])
 
     merged_df['repseq'] = merged_df['RepSeq'].str.strip()
 
-    hit_df = merged_df[['prediction', 'contig', 'protein_id', 'strand', 'start', 'end', 'repseq']]
-    hit_df = hit_df.sort_values(by='prediction')
+    hit_df = merged_df[['Prediction', 'contig', 'protein_id', 'strand', 'start', 'end', 'repseq']]
+    hit_df = hit_df.sort_values(by='Prediction')
 
     target_seq = f"{input_info[1]}/target_seq.tsv"
 

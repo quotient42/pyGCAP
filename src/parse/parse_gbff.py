@@ -1,19 +1,7 @@
-'''
-This file contains functionality to parse GenBank files and extract relevant information.
-
-Functions:
-- get_gbff_info_and_split: Extracts species information and splits the input GenBank file into regions based on the FEATURES section.
-- split_into_regions: Splits the input lines into regions based on the 'gene' feature.
-- parse_region: Parses a region into a list of key-value pairs.
-- make_dict: Creates a dictionary from parsed regions.
-- filter_dict: Filters the dictionary based on predefined key settings.
-- parse_gbff_main: Parses the input GenBank file and returns species information and a DataFrame of parsed regions.
-
-'''
-
 import pandas as pd
 import sys
 
+sys.path.append("../info/")
 from gbff_info import gbff_key_setting
 
 def get_gbff_info_and_split(file_path):

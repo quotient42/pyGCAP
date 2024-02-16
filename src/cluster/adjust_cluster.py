@@ -1,7 +1,7 @@
 import pandas as pd
 
 def process_data(df):
-    df = df[['prediction', 'block', 'start', 'end']]
+    df = df[['Prediction', 'block', 'start', 'end']]
     df = df[df['block'] > 0]
 
     modified_groups = []
@@ -40,7 +40,7 @@ def fill_blank_rows(group_data):
         if current_row['end'] != next_row['start']:
             new_row = {
                 'block': current_row['block'],
-                'prediction': 'blank',
+                'Prediction': 'blank',
                 'start': current_row['end'],
                 'end': next_row['start']
             }
@@ -63,7 +63,7 @@ def process_and_concat_data(file_path):
         modified_groups2.append(fill_blank_rows(group_data))
 
     modified_df = pd.concat(modified_groups2, ignore_index=True)
-    modified_df = modified_df[['block', 'prediction', 'start', 'end']]
+    modified_df = modified_df[['block', 'Prediction', 'start', 'end']]
 
     return modified_df
 

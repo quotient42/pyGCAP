@@ -16,7 +16,7 @@ def construct_lib(project_info):
 
 		seq_df['RepSeq_tmp'] = seq_df['RepSeq'].apply(lambda x: float(x.replace('WP_', '')))
 		seq_df = seq_df.sort_values('RepSeq_tmp')
-		seq_df['prediction'] = pd.Series([], dtype=object)
+		seq_df['Prediction'] = pd.Series([], dtype=object)
 
 		start_time = time.time()
 
@@ -29,16 +29,16 @@ def construct_lib(project_info):
 				while low <= high:
 						mid = (low + high) // 2
 						if seq_df.iloc[mid]['RepSeq_tmp'] == row['repseq_tmp']:
-								seq_df.at[mid, 'prediction'] = row['prediction']
+								seq_df.at[mid, 'Prediction'] = row['Prediction']
 								break
 						elif seq_df.iloc[mid]['RepSeq_tmp'] < row['repseq_tmp']:
 								low = mid + 1
 						else:
 								high = mid - 1
 
-		seq_df = seq_df.dropna(subset=['prediction'])
-		seq_df = seq_df[['prediction', 'RepSeq', 'Total', 'Seq_List']]
-		seq_df = seq_df.sort_values('prediction')
+		seq_df = seq_df.dropna(subset=['Prediction'])
+		seq_df = seq_df[['Prediction', 'RepSeq', 'Total', 'Seq_List']]
+		seq_df = seq_df.sort_values('Prediction')
 
 		seq_df.to_csv(f"{seqlib_dir}/seqlib.tsv", sep='\t', index=False)
 

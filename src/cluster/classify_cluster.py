@@ -25,13 +25,13 @@ def classify_target_cluster(project_info):
 					filename = f"{input_dir}/{genus}/{accession}/target_cluster.tsv"
 					df = pd.read_csv(filename, sep='\t', comment='#')
 
-					protein_cnt = len(df[(df['prediction'] != '----') & (df['cluster'] == True)])
+					protein_cnt = len(df[(df['Prediction'] != '----') & (df['cluster'] == True)])
 					df = df[df['block'] > 0]
 					block_sizes = []
 					for block_num in df['block'].unique():
-							predictions_in_block = df[df['block'] == block_num]['prediction'].tolist()
-							non_dash_count = sum(1 for pred in predictions_in_block if pred != '----')
-							block_sizes.extend([non_dash_count] * len(predictions_in_block))
+							Predictions_in_block = df[df['block'] == block_num]['Prediction'].tolist()
+							non_dash_count = sum(1 for pred in Predictions_in_block if pred != '----')
+							block_sizes.extend([non_dash_count] * len(Predictions_in_block))
 
 					df['block_size'] = block_sizes
 					block_cnt = df['block_size'].max()
