@@ -5,7 +5,7 @@ from matplotlib.font_manager import FontProperties
 from matplotlib.colors import LinearSegmentedColormap
 
 def visualize_by_genus(output_dir):
-    main_df = pd.read_csv(f"{output_dir}/tsv/target_genus.tsv", sep='\t', comment='#')
+    main_df = pd.read_csv(f"{output_dir}/tsv/contents_genus.tsv", sep='\t', comment='#')
 
     main_df = main_df.fillna(0)
 

@@ -14,7 +14,7 @@ def classify_target_cluster(project_info):
 
 	start_time = time.time()
 
-	cluster_df = pd.read_csv(f"{output_dir}/tsv/target_species.tsv", sep='\t', comment='#').copy()
+	cluster_df = pd.read_csv(f"{output_dir}/tsv/contents_species.tsv", sep='\t', comment='#').copy()
 	cluster_df.insert(1, 'cluster', "-")
 
 	for genus in all_directories:

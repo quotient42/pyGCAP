@@ -5,7 +5,7 @@ from matplotlib.font_manager import FontProperties
 from matplotlib.colors import LinearSegmentedColormap
 
 def visualize_by_species(output_dir):
-  main_df = pd.read_csv(f"{output_dir}/tsv/target_species.tsv", sep='\t', comment='#')
+  main_df = pd.read_csv(f"{output_dir}/tsv/contents_species.tsv", sep='\t', comment='#')
 
   main_df = main_df.fillna(0)
   main_df = main_df.sort_values(by='name')
@@ -32,5 +32,5 @@ def visualize_by_species(output_dir):
                   labelleft=True, labelright=False)
   plt.tight_layout()
 
-  plt.savefig(f'{output_dir}/img/target_species.png')
+  plt.savefig(f'{output_dir}/img/contents_species.png')
   plt.close()

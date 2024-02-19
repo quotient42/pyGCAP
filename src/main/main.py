@@ -11,6 +11,7 @@ from _seqlib import create_seqlib
 from _search import search_target_seq
 from _count import count_target
 from _cluster import cluster_target
+from _accessory import collect_accessory
 from classify_cluster import classify_target_cluster
 
 with open("./project_info.tsv", 'r') as file:
@@ -36,11 +37,13 @@ organize_input_dir(project_info)
 
 project_info['input_len'] = 696
 # parse_genome_data(project_info)
-create_seqlib(project_info)
-search_target_seq(project_info)
-count_target(project_info)
-cluster_target(project_info)
-classify_target_cluster(project_info)
+# create_seqlib(project_info)
+# search_target_seq(project_info)
+# count_target(project_info)
+# cluster_target(project_info)
+# classify_target_cluster(project_info)
+
+collect_accessory(project_info)
 
 end_time = time.time()
 total = end_time - start_time

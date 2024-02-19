@@ -46,7 +46,7 @@ def count_target(project_info):
     target_cnt = pd.concat(target_cnt_list, ignore_index=True)
 
     target_cnt = target_cnt.sort_values("name")
-    target_cnt.to_csv(f"{output_dir}/tsv/target_species.tsv", sep='\t', index=False)
+    target_cnt.to_csv(f"{output_dir}/tsv/contents_species.tsv", sep='\t', index=False)
 
     count_target_by_genus(output_dir, target_cnt)
     visualize_by_species(output_dir)

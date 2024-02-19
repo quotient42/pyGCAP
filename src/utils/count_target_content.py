@@ -28,4 +28,4 @@ def count_target_by_genus(output_dir, df):
 
   result_df = result_df.fillna(0)
   result_df = result_df.round(3)
-  result_df.to_csv(f"{output_dir}/tsv/target_genus.tsv", sep='\t', index=False)
+  result_df.to_csv(f"{output_dir}/tsv/contents_genus.tsv", sep='\t', index=False)
