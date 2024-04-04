@@ -1,7 +1,6 @@
 import os
 import pandas as pd
 
-
 project_info = {
     'Project_Name': [],
     'Root_Dir': [],
