@@ -45,8 +45,8 @@ def final_profile(project_info):
 					profile = profile._append(new_row, ignore_index=True)
 
 	profile = profile.sort_values('name')
-	profile.to_csv(f"{output_dir}/tsv/repseq_species1.tsv", sep='\t', index=False)
-	visualize_heatmap(output_dir, 'repseq_species1', 2)
+	profile.to_csv(f"{output_dir}/tsv/final_profile_1.tsv", sep='\t', index=False)
+	visualize_heatmap(output_dir, 'final_profile_1', 2)
 
 	acc_columns = [col for col in profile.columns if col.startswith('Acc.')]
 	simplified_profile = profile[['accession', 'name'] + acc_columns]
@@ -64,5 +64,5 @@ def final_profile(project_info):
 	rearranged_columns = other_columns + acc_columns
 	simplified_profile = simplified_profile[rearranged_columns]
 
-	simplified_profile.to_csv(f"{output_dir}/tsv/repseq_species2.tsv", sep='\t', index=False)
-	visualize_heatmap(output_dir, 'repseq_species2', 0)
+	simplified_profile.to_csv(f"{output_dir}/tsv/final_profile_2.tsv", sep='\t', index=False)
+	visualize_heatmap(output_dir, 'final_profile_2', 0)

@@ -54,7 +54,15 @@ def search_target(project_info):
             merged_df = merged_df.fillna('------')
             merged_df = merged_df.sort_values('Prediction')
 
-            merged_df.to_csv(f"{cur_dir}/target_merge.tsv", sep='\t', index=False)
+            first_cols = ['Prediction', 'TarName', 'RepName', 'repseq']
+            remaining_cols = [col for col in merged_df.columns if col not in first_cols]
+
+            new_order = first_cols + remaining_cols
+            merged_df = merged_df[new_order]
+
+            with open(f"{cur_dir}/target_merge.tsv", 'w') as summary_file:
+                summary_file.write(f"# {input_info[0]}\n# {input_info[2]}\n")
+                merged_df.to_csv(summary_file, sep='\t', index=False)
 
     end_time = time.time()
     total = end_time - start_time

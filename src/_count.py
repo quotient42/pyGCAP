@@ -96,8 +96,8 @@ def count_mmseq_result(project_info):
     target_names = []
     for target in target_list:
         target_names.append(target['protein'])
-    target_cnt_list = []
 
+    target_cnt_list_1 = []
     for genus in all_directories:
         genus_df_list = []
         for accession in os.listdir(os.path.join(input_dir, genus)):
@@ -109,22 +109,41 @@ def count_mmseq_result(project_info):
         
         if genus_df_list:
             genus_df = pd.concat(genus_df_list, ignore_index=True)
-            target_cnt_list.append(genus_df)
+            target_cnt_list_1.append(genus_df)
 
-    target_cnt = pd.concat(target_cnt_list, ignore_index=True)
+    target_cnt_1 = pd.concat(target_cnt_list_1, ignore_index=True)
+    target_cnt_1 = target_cnt_1.sort_values("name")
+    target_cnt_1.to_csv(f"{output_dir}/tsv/contents_mmseq_species.tsv", sep='\t', index=False)
 
-    target_cnt = target_cnt.sort_values("name")
-    target_cnt.to_csv(f"{output_dir}/tsv/contents_mmseq_species.tsv", sep='\t', index=False)
-
-    count_mmseq_genus(output_dir, target_cnt)
+    count_mmseq_genus(output_dir, target_cnt_1)
     visualize_heatmap(output_dir, "contents_mmseq_species", 0)
     visualize_heatmap(output_dir, "contents_mmseq_genus", 1)
-
-    target_sum = target_cnt[target_names]
+    target_sum = target_cnt_1[target_names]
     target_sum = target_sum.sum(axis=0).reset_index()
     target_sum.to_csv(f"{output_dir}/tsv/target_frequency.tsv", sep='\t', index=False)
-
     visualize_freq(output_dir)
+
+    target_cnt_list_2 = []
+    for genus in all_directories:
+        genus_df_list = []
+        for accession in os.listdir(os.path.join(input_dir, genus)):
+            if not "GC" in accession:
+                continue
+            file_path = f"{input_dir}/{genus}/{accession}/target_merge.tsv"
+            tmp = count_mmseq_species(file_path, target_names)
+            genus_df_list.append(tmp)
+        
+        if genus_df_list:
+            genus_df = pd.concat(genus_df_list, ignore_index=True)
+            target_cnt_list_2.append(genus_df)
+
+    target_cnt_2 = pd.concat(target_cnt_list_2, ignore_index=True)
+    target_cnt_2 = target_cnt_2.sort_values("name")
+    target_cnt_2.to_csv(f"{output_dir}/tsv/contents_merge_species.tsv", sep='\t', index=False)
+
+    count_merge_genus(output_dir, target_cnt_2)
+    visualize_heatmap(output_dir, "contents_merge_species", 0)
+    visualize_heatmap(output_dir, "contents_merge_genus", 1)
 
     end_time = time.time()
     total = end_time - start_time
@@ -158,6 +177,15 @@ def count_mmseq_genus(output_dir, df):
   result_df = result_df.fillna(0)
   result_df = result_df.round(3)
   result_df.to_csv(f"{output_dir}/tsv/contents_mmseq_genus.tsv", sep='\t', index=False)
+
+def count_merge_genus(output_dir, df):
+  df['genus'] = df['name'].str.split().str[0]
+
+  protein_columns = df.columns[2:-1]
+  result_df = df.drop('name', axis=1).groupby('genus')[protein_columns].mean().reset_index()
+  result_df = result_df.fillna(0)
+  result_df = result_df.round(3)
+  result_df.to_csv(f"{output_dir}/tsv/contents_merge_genus.tsv", sep='\t', index=False)
 
 #===============================================================================
 def count_mmseq_cluster(project_info):

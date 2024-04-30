@@ -71,7 +71,7 @@ def plot_subplot(ax, gene_data, bar_id):
     ax.set_yticks([0])
     ax.set_yticklabels([bar_id])
 
-    ax.set_xlim(0, 500)
+    ax.set_xlim(0, 400)
     ax.set_xticks([])
 
     return handles
@@ -112,7 +112,6 @@ def draw_cluster(cluster_data, genus):
   return fig
 
 def visualize_cluster(input_path, output_path, genus):
-  print("<< drawing gene clusters...")
   collected_df = pd.DataFrame()
 
   files = glob.glob(os.path.join(input_path, 'GCF_*.tsv'))
