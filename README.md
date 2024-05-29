@@ -1,8 +1,7 @@
-## (work in process)
-
 # lacto-dcw
 
 - [introduction](#introduction)
+- [program-flow](#program-flow)
 - [pre-requirement](#pre-requirement)
 - [tutorial](#tutorial)
 - [result description](#result-description)
@@ -21,6 +20,11 @@
   <img width=640 height = 480 src="https://media.springernature.com/lw685/springer-static/image/art%3A10.1186%2F1475-2859-13-S1-S9/MediaObjects/12934_2014_Article_1029_Fig2_HTML.jpg?as=webp">
 
 ---
+### program-flow
+
+<img width="801" alt="flowchart" src="https://github.com/logcossin/lacto-dcw/assets/90167645/db6e78d4-16b2-4a18-925d-c3dbb6fb3494">
+
+---
 
 ### pre-requirement
 
@@ -28,76 +32,28 @@
 
   1. `Python`
   2. `conda` environment
-  3. `blast` (CLI)
-  4. `datasets` & `dataformat` from NCBI
-  5. `MMseqs2` ([github](https://github.com/soedinglab/MMseqs2))
+      - `blast`
+      - `datasets` & `dataformat` from NCBI
+      - `MMseqs2` ([MMseqs2 github](https://github.com/soedinglab/MMseqs2))
 
-- 필요한 data
-
-  1. target protein data
-     - `target.tsv`
-     - `target.fasta`
-  2. ncbi dataset -> target organism의 `genomic.gff`, `genomic.gbff`, `protein.faa`
-
-     ```
-     # Get tools used for data download
-     wget https://ftp.ncbi.nlm.nih.gov/pub/datasets/command-line/v2/linux-amd64/datasets
-     wget https://ftp.ncbi.nlm.nih.gov/pub/datasets/command-line/v2/linux-amd64/dataformat
-
-     # Change the file mode
-     chmod a+x ./datasets # file should appear green when viewed with 'ls' command
-     chmod a+x ./dataformat
-     ```
-
-     ```
-     ./datasets download genome taxon "lactobacillales" --reference --include protein,gff3 --filename {OUTPUT_FILENAME}.zip
-
-     unzip {OUTPUT_FILENAME}.zip
-     ```
-
-  3. ncbi dataformat -> `assembly_report.tsv`
-     ```
-     ./dataformat tsv genome --inputfile {YOUR_PATH}/ncbi_dataset/data/assembly_data_report.jsonl --fields accession,organism-name,assmstats-total-sequence-len,checkm-completeness,checkm-contamination,annotinfo-featcount-gene-total > assembly_report.tsv
-     ```
-  4. MMseqs2 -> `result_clutster.tsv`
-
-     ```
-     cat {YOUR_PATH}/ncbi_dataset/data/*/protein.faa > {OUTPUT_FILENAME}.faa
-
-     {YOUR_PATH}/mmseqs/bin/mmseqs easy-cluster {OUTPUT_FILENAME}.faa result tmp --min-seq-id 0.5 --threads 55
-     ```
-
+- input data
+   1. working directory
+   2. taxon (both name and taxid are available)
+   3. path of `target.tsv`
+       - target name (user defined)
+       - protein name (user defined)
+       - protein entry (UniProt) 
 ---
 
 ### tutorial
-
-1. 아래 명령어 실행하여 project dir 지정하고 필요한 정보를 넣기
-   ```
-   python3 src/main/init.py
-   ```
-   ```
-   project root dir
-   ├── data          assembly_report.tsv, target.fasta, result_clutster.tsv
-   ├── input         all GCF_* directories
-   ├── output
-   │   ├── tsv
-   │   ├── img
-   │   └── genus
-   └── seqlib
-   ```
-   - project의 초기 설정은 `src/main`의 `project_info`에서 확인가능
-2. 아래 명령어 실행하여 target contents/order 구하기
-   ```
-   python3 src/main/main.py
-   ```
 
 ---
 
 ### result description
 
 1. `output/tsv`
-1. `output/img`
-1. `output/genus`
+2. `output/img`
+3. `output/genus`
 
 ---
 

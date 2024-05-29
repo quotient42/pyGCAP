@@ -7,28 +7,6 @@ import matplotlib.patches as mpatches
 from matplotlib.font_manager import FontProperties
 from matplotlib.colors import LinearSegmentedColormap
 
-target_color = {
-    "MraZ": "#8ED3C7",
-    "MraW": "#F99FB5",
-    "FtsL": "#2A9D8F",
-    "FtsI": "#BEBADB",
-    "MurE": "#FB7F72",
-    "MurF": "#81B1D3",
-    "MraY": "#FDB364",
-    "MurD": "#B2DE68",
-    "FtsW": "#E4B7CD",
-    "MurG": "#B6C8FE",
-    "MurC": "#BD7FBB",
-    "MurB": "#CDEBC3",
-    "MurA": "#DFC27C",
-    "DdlB": "#C7E8FA",
-    "FtsQ": "#A95C68",
-    "FtsA": "#FCBBA2",
-    "FtsZ": "#F7DA84",
-    "blank": "#F0F0F0",
-    "etc": "#C0C0C0"
-}
-
 #------------------------------------------------------------
 def visualize_cluster_type(output_dir, df):
   x = np.arange(len(df))
@@ -71,15 +49,12 @@ def collect_gene_data(main_df):
 
     return bar_data
 
-def plot_subplot(ax, gene_data, bar_id):
-    color_dict = {}
+def plot_subplot(ax, gene_data, bar_id, color_dict):
     handles = []
 
     for gene in gene_data:
-        if gene['Prediction'] in target_color:
-            color_dict[gene['Prediction']] = target_color[gene['Prediction']]
-        else:
-            color_dict[gene['Prediction']] = target_color['etc']
+        if not gene['Prediction'] in color_dict:
+            gene['Prediction'] = 'etc'
 
         start = int(gene['start'])
         end = int(gene['end'])
@@ -90,12 +65,12 @@ def plot_subplot(ax, gene_data, bar_id):
     ax.set_yticks([0])
     ax.set_yticklabels([bar_id])
 
-    ax.set_xlim(0, 400)
+    ax.set_xlim(0, 500)
     ax.set_xticks([])
 
     return handles
 
-def draw_cluster(cluster_data, genus):
+def draw_cluster(cluster_data, genus, color_dict):
   fig, axes = plt.subplots(len(cluster_data) + 1, 1,
                figsize=(10, 0.5 * (len(cluster_data) + 1)),
                gridspec_kw={'height_ratios': [0.5] + [0.5] * len(cluster_data), 'hspace': 1})
@@ -106,7 +81,7 @@ def draw_cluster(cluster_data, genus):
   all_handles = []
   for idx, (bar_id, gene_data) in enumerate(cluster_data.items()):
     ax1 = axes[idx + 1]
-    handles = plot_subplot(ax1, gene_data, bar_id)
+    handles = plot_subplot(ax1, gene_data, bar_id, color_dict)
     all_handles.extend(handles)
 
     ax1.spines['right'].set_visible(False)
@@ -116,7 +91,7 @@ def draw_cluster(cluster_data, genus):
 
   ax_legend.set_frame_on(False)
 
-  legend_patches = [mpatches.Patch(color=color, label=gene) for gene, color in target_color.items()]
+  legend_patches = [mpatches.Patch(color=color, label=gene) for gene, color in color_dict.items()]
   legend = ax_legend.legend(handles=legend_patches,
                                loc='center',
                 ncol=7,
@@ -130,7 +105,7 @@ def draw_cluster(cluster_data, genus):
 
   return fig
 
-def visualize_cluster(input_path, output_path, genus):
+def visualize_cluster(input_path, output_path, genus, color_dict):
   collected_df = pd.DataFrame()
 
   files = glob.glob(os.path.join(input_path, 'GCF_*.tsv'))
@@ -144,7 +119,7 @@ def visualize_cluster(input_path, output_path, genus):
   collected_df = collected_df[['accession', 'block', 'Prediction', 'start', 'end']]
 
   bar_data = collect_gene_data(collected_df)
-  fig = draw_cluster(bar_data, genus)
+  fig = draw_cluster(bar_data, genus, color_dict)
 
   bar_img = f"{output_path}/{genus}.png"
   fig.savefig(bar_img, bbox_inches='tight')

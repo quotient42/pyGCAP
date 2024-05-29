@@ -2,6 +2,8 @@ import time
 import subprocess
 import os
 import glob
+import requests
+from xml.etree import ElementTree
 
 from ._utils import sum_assembly_report
 from ._utils import organize_input_dir
@@ -17,12 +19,62 @@ from ._accessory import collect_accessory
 from ._profile import final_profile
 from ._target import process_target_data
 
+def get_taxon_name_from_taxid(taxid):
+    base_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
+    params = {
+        "db": "taxonomy",
+        "id": taxid,
+        "retmode": "xml"
+    }
+    response = requests.get(base_url + "efetch.fcgi", params=params)
+    
+    if response.status_code == 200:
+        root = ElementTree.fromstring(response.content)
+        scientific_name = root.find(".//ScientificName")
+        if scientific_name is not None:
+            return scientific_name.text
+        else:
+            print("[Error] Taxon not found. Check the taxid and try again.")
+            exit()
+    else:
+        print ("[Error] something went wrong while searching taxon.")
+        exit()
+
+def search_taxon_by_name(name):
+    base_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
+    params = {
+        "db": "taxonomy",
+        "term": name,
+        "retmode": "xml"
+    }
+    response = requests.get(base_url + "esearch.fcgi", params=params)
+
+    if response.status_code == 200:
+        root = ElementTree.fromstring(response.content)
+        id_list = root.findall(".//IdList/Id")
+        if not id_list:
+            print("[Error] No taxon found for the given name. Check the name and try again.")
+            exit()
+        else:
+            taxid = id_list[0].text
+            return taxid
+    else:
+        print("[Error] something went wrong while searching taxon by name.")
+        exit()
+
 def process_genome_data(working_dir, TAXON):
+    if TAXON.isdigit():
+        taxid = TAXON
+        TAXON = get_taxon_name_from_taxid(TAXON)
+    else:
+        taxid = search_taxon_by_name(TAXON)
+
+    print(f"<< TAXON info: {TAXON} [taxid={taxid}]")
     ROOT_DIR = f"{working_dir}/{TAXON}"
     DATA_DIR = f"{ROOT_DIR}/data"
     INPUT_DIR = f"{ROOT_DIR}/input"
 
-    answer = input(">> Need to download new genome data? (y/n): ")
+    answer = input(f">> Need to download new genome data? (y/n): ")
     if answer.lower() == "y":
         print("<< Downloading genome data...")
         subprocess.run(["datasets", "download", "genome", "taxon", TAXON, "--reference", "--include", "protein,gff3,gbff", "--filename", f"{working_dir}/{TAXON}.zip"])
@@ -78,6 +130,7 @@ def process_genome_data(working_dir, TAXON):
         os.mkdir(seqlib_dir)
 
     print("<< Data organization complete.")
+    return TAXON
 
 
 def find_gene_cluster(working_dir, TAXON, target_path):
@@ -90,7 +143,7 @@ def find_gene_cluster(working_dir, TAXON, target_path):
 
     start_time = time.time()
 
-    process_genome_data(working_dir, TAXON)
+    TAXON = process_genome_data(working_dir, TAXON)
 
     project_info = {
             'project_name': TAXON + " gene cluster",

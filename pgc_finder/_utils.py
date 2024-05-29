@@ -12,19 +12,30 @@ import random
 #=======================================================================================
 def sum_assembly_report(project_info):
     raw_df = pd.read_csv(f"{project_info['data']}/assembly_report.tsv", sep='\t')
+    original_size = raw_df.shape[0]
 
     completeness_filter = 80
     contamination_filter = 10
 
-    low_completeness, high_contamination = _filter_and_save_completeness(project_info, raw_df, completeness_filter, contamination_filter)
-    unique_genus, missclassified_species = _process_and_save_summary(project_info, raw_df)
+    excluded_list, low_completeness, high_contamination = _filter_and_save_completeness(project_info, raw_df, completeness_filter, contamination_filter)
+    unique_genus, missclassified_list = _process_and_save_summary(project_info, raw_df)
+
+    raw_df = raw_df[~raw_df['Assembly Accession'].isin(excluded_list + missclassified_list)]
+
+    input_dir = project_info['input']
+    print(f"<< Deleting genome date of low quality")
+    for accession in excluded_list + missclassified_list:
+        accession_dir = os.path.join(input_dir, accession)
+
+        if os.path.isdir(accession_dir):
+            shutil.rmtree(accession_dir)
 
     print("------------------------------------------")
-    print("  *  total number of genomes:\t{}".format(raw_df.shape[0]))
-    print("  *  completeness < {}%:\t{}".format(completeness_filter, low_completeness))
-    print("  *  contamination > {}%:\t{}".format(contamination_filter, high_contamination))
-    print("  *  number of different genus:\t{}".format(unique_genus))
-    print("  *  missclassified species:\t{}".format(missclassified_species))
+    print(f"  *  total number of genomes:\t{raw_df.shape[0]} ({original_size})")
+    print(f"  *  completeness < {completeness_filter}%:\t{low_completeness}")
+    print(f"  *  contamination > {contamination_filter}%:\t{high_contamination}")
+    print(f"  *  number of different genus:\t{unique_genus}")
+    print(f"  *  missclassified species:\t{len(missclassified_list)}")
     print("------------------------------------------")
 
     return raw_df.shape[0]
@@ -38,14 +49,18 @@ def _filter_and_save_completeness(project_info, raw_df, completeness_filter, con
     high_contamination = high_contamination[['Assembly Accession', 'Organism Name', 'CheckM contamination']]
     high_contamination.to_csv(f"{project_info['output']}/tsv/contamination_{str(contamination_filter)}.tsv", sep='\t', index=False)
 
-    return low_completeness.shape[0], high_contamination.shape[0]
+    excluded_list = low_completeness['Assembly Accession'].tolist() + high_contamination['Assembly Accession'].tolist()
+    excluded_list = list(set(excluded_list))
+
+    return excluded_list, low_completeness.shape[0], high_contamination.shape[0]
 
 def _process_and_save_summary(project_info, raw_df):
     df = raw_df.copy()
     df['Organism Name'] = df['Organism Name'].apply(lambda x: ' '.join(x.split()[:2]))
     df[['Genus', 'Species']] = df['Organism Name'].str.split(n=2, expand=True)
 
-    missclassified_species = df[df['Genus'].str.startswith('[')].shape[0]
+    missclassified_list = df[df['Genus'].str.startswith('[')]['Assembly Accession'].tolist()
+
     df = df[~df['Genus'].str.startswith('[')]
 
     df = df.sort_values(by='Organism Name').reset_index(drop=True)
@@ -66,7 +81,7 @@ def _process_and_save_summary(project_info, raw_df):
 
     df_genus.to_csv(f"{project_info['output']}/tsv/genus_summary.tsv", sep='\t', index=False)
 
-    return unique_genus, missclassified_species
+    return unique_genus, missclassified_list
 
 #=======================================================================================
 def organize_input_dir(project_info):

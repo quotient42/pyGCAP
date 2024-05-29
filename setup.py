@@ -1,16 +1,16 @@
 from setuptools import setup, find_packages
 
 setup(
-    name='dcw-finder',
-    version='0.0.26',
-    description='Package for detecting dcw gene cluster',
+    name='pgc-finder',
+    version='0.0.1',
+    description='python package for probe-based gene cluster finding in large microbial genome database',
     author='jsrim',
     author_email='comfortindex@naver.com',
     url='https://github.com/jrim42/gene-cluster',
     install_requires=['pandas', 'matplotlib'],
     packages=find_packages(exclude=[]),
     keywords=[],
-    python_requires='>=3.6',
+    python_requires='>=3.11',
     package_data={},
     zip_safe=False,
     classifiers=[

@@ -9,6 +9,7 @@
 import os
 import pandas as pd
 import time
+import random
 
 from ._visualize import visualize_cluster
 from ._visualize import visualize_cluster_type
@@ -16,6 +17,10 @@ from ._visualize import visualize_cluster_type
 #===============================================================================
 def cluster_target(project_info):
     print("<< clustering target genes...")
+    df = pd.read_csv(f"{project_info['data']}/target.tsv", sep='\t')
+    target_list = df['Prediction'].drop_duplicates().tolist()
+    init_color_dict(target_list)
+
     input_dir = project_info['input']
     input_len = project_info['input_len']
     output_dir = project_info['output']
@@ -49,7 +54,7 @@ def cluster_target(project_info):
             cluster_summary = search_cluster(input_info, genome_summary, target_list)
             adjust_cluster(input_info, cluster_summary, f"{path}/tmp")
 
-        visualize_cluster(f"{path}/tmp", f"{output_dir}/genus", genus)
+        visualize_cluster(f"{path}/tmp", f"{output_dir}/genus", genus, color_dict)
 
     end_time = time.time()
     total = end_time - start_time
@@ -290,3 +295,56 @@ def classify_cluster_type(project_info):
 	end_time = time.time()
 	total = end_time - start_time
 	print(f"   └── classification done (elapsed time: {round(total / 60, 3)} min)")
+
+#===============================================================================
+color_dict = {
+    "color_1": "#8ED3C7",
+    "color_2": "#F99FB5",
+    "color_3": "#2A9D8F",
+    "color_4": "#BEBADB",
+    "color_5": "#FB7F72",
+    "color_6": "#81B1D3",
+    "color_7": "#FDB364",
+    "color_8": "#B2DE68",
+    "color_9": "#E4B7CD",
+    "color_10": "#B6C8FE",
+    "color_11": "#BD7FBB",
+    "color_12": "#CDEBC3",
+    "color_13": "#DFC27C",
+    "color_14": "#C7E8FA",
+    "color_15": "#A95C68",
+    "color_16": "#FCBBA2",
+    "color_17": "#F7DA84",
+    "blank": "#F0F0F0",
+    "etc": "#C0C0C0"
+}
+
+def is_gray_scale(hex_color):
+    r = int(hex_color[0:2], 16)
+    g = int(hex_color[2:4], 16)
+    b = int(hex_color[4:6], 16)
+    return r == g == b
+
+def generate_unique_hex_color():
+    while True:
+        hex_color = ''.join([random.choice('0123456789ABCDEF') for _ in range(6)])
+        if not is_gray_scale(hex_color) and hex_color not in color_dict.values():
+            hex_color = "#" + str(hex_color)
+            return hex_color
+
+def init_color_dict(key_list):
+    global color_dict
+    existing_keys = [key for key in color_dict.keys() if key not in ['blank', 'etc']]
+    existing_colors = [color_dict[key] for key in existing_keys]
+
+    for i, key in enumerate(key_list):
+        if i < 17:
+            color_dict[key] = existing_colors[i]
+        else:
+            unique_color = generate_unique_hex_color()
+            color_dict[key] = unique_color
+
+    keys_to_delete = [key for key in color_dict if key.startswith('color_') and key not in key_list]
+    for key in keys_to_delete:
+        del color_dict[key]
+    
