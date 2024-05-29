@@ -12,11 +12,6 @@ import pandas as pd
 import sys
 import time
 
-target_names = [
-  "MraZ", "MraW", "FtsL", "FtsI", "MurE", "MurF", "MraY", "MurD", "FtsW", 
-  "MurG", "MurC", "MurB", "MurA", "DdlB", "FtsQ", "FtsA", "FtsZ"
-]
-
 from ._visualize import visualize_heatmap
 from ._visualize import visualize_freq
 
@@ -29,7 +24,7 @@ def count_blastp_result(project_info):
     assembly_df = pd.read_csv(f"{project_info['output']}/tsv/assembly_report_sum.tsv", sep='\t')
 
     target = target_df['target name'].values.tolist()
-    target2 = target_df['prediction'].values.tolist()
+    target2 = target_df['Prediction'].values.tolist()
 
     name = assembly_df['Organism Name'].values.tolist() 
     accession = assembly_df['Accession'].values.tolist() 
@@ -89,6 +84,8 @@ def count_mmseq_result(project_info, TAXON):
     print("<< counting target by species and genus level...")
     input_dir = project_info['input']
     output_dir = project_info['output']
+    df = pd.read_csv(f"{project_info['data']}/target.tsv", sep='\t')
+    target_names = df['Prediction'].drop_duplicates().tolist()
 
     all_directories = [d for d in os.listdir(input_dir) if os.path.isdir(os.path.join(input_dir, d))]
     all_directories = [d for d in all_directories if d != 'output' and not d.startswith('output/')]

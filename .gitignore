@@ -14,3 +14,10 @@ result_rep_seq.fasta
 project_info.tsv
 all.fasta
 lacto.aa.*
+datasets
+dataformat
+ncbi_dataset
+*.zip
+dist
+build
+*.egg-info
