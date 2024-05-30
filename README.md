@@ -1,22 +1,19 @@
-# lacto-dcw
+# pgc-finder
 
 - [introduction](#introduction)
 - [program-flow](#program-flow)
 - [pre-requirement](#pre-requirement)
 - [usage](#usage)
+- [example](#example)
 
 ---
 
 ### introduction
 
-- Profiling _dcw_ genes from pan-genomes of Lactobacillales (LAB)
 
 * this repository was built for the guiding 2023-2024 winter URAP student [@jrim42](https://github.com/jrim42)
 * based on this paper - [Ancient origin and constrained evolution of the division and cell wall gene cluster in Bacteria](https://www.nature.com/articles/s41564-022-01257-y)
-* Cell wall biosynthesis of LAB (eventually we can check and consider using related genes and proteins; for example, [Table 1](https://microbialcellfactories.biomedcentral.com/articles/10.1186/1475-2859-13-S1-S9/tables/1) in this [reveiw paper](https://microbialcellfactories.biomedcentral.com/articles/10.1186/1475-2859-13-S1-S9))
-  <br>
-  <img width=640 height = 480 src="https://media.springernature.com/lw685/springer-static/image/art%3A10.1186%2F1475-2859-13-S1-S9/MediaObjects/12934_2014_Article_1029_Fig2_HTML.jpg?as=webp">
-
+  
 ---
 ### program-flow
 
@@ -42,13 +39,14 @@
         ```
         conda install -c conda-forge -c bioconda mmseqs2
         ```
+---
 
 ### usage
   ```
   pip install pgc-finder
   pgc-finder <working_dir> <TAXON> <target_path>
   ```
-  
+  - pypi pgc-finder [(link)](https://pypi.org/project/pgc-finder/)
   - input data description
      1. working directory
      2. taxon (both name and taxid are available)
@@ -56,4 +54,13 @@
          - target name (user defined)
          - protein name (user defined)
          - protein entry (UniProt) 
+
+---
+
+### example
+
+- Profiling _dcw_ genes from pan-genomes of Lactobacillales (LAB)
+* Cell wall biosynthesis of LAB (eventually we can check and consider using related genes and proteins; for example, [Table 1](https://microbialcellfactories.biomedcentral.com/articles/10.1186/1475-2859-13-S1-S9/tables/1) in this [reveiw paper](https://microbialcellfactories.biomedcentral.com/articles/10.1186/1475-2859-13-S1-S9))
+  <br>
+  <img width=640 height = 480 src="https://media.springernature.com/lw685/springer-static/image/art%3A10.1186%2F1475-2859-13-S1-S9/MediaObjects/12934_2014_Article_1029_Fig2_HTML.jpg?as=webp">
 
