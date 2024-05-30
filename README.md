@@ -1,5 +1,5 @@
-# PGCfinder
-PGCfinder: A Python Package for Probe-based Gene Cluster Finding in Large Microbial Genome Database
+# pyGCAP: a python Gene Cluster Annotator & Profiler
+A Python Package for Probe-based Gene Cluster Finding in Large Microbial Genome Database
 
 - [introduction](#introduction)
 - [pipeline-flow](#pipeline-flow)
@@ -11,7 +11,7 @@ PGCfinder: A Python Package for Probe-based Gene Cluster Finding in Large Microb
 
 ### introduction
 
-Bacterial gene clusters provide insights into metabolism and evolution, and facilitate biotechnological applications. We developed PGCfinder, a Python package for probe-based gene cluster discovery. This pipeline uses sequence search and analysis tools and public databases (e.g. BLAST,  MMSeqs2,  UniProt, and NCBI) to predict potential gene clusters by user-provided probe genes. We tested the pipeline with the division and cell wall (dcw) gene cluster, crucial for cell division and peptidoglycan biosynthesis. 
+Bacterial gene clusters provide insights into metabolism and evolution, and facilitate biotechnological applications. We developed pyGCAP, a Python package for probe-based gene cluster discovery. This pipeline uses sequence search and analysis tools and public databases (e.g. BLAST,  MMSeqs2,  UniProt, and NCBI) to predict potential gene clusters by user-provided probe genes. We tested the pipeline with the division and cell wall (dcw) gene cluster, crucial for cell division and peptidoglycan biosynthesis. 
 
 To evaluate PGCfinder, we used 17 major dcw genes defined by Megrian et al. [1] as a probe set to search for gene clusters in 696 Lactobacillales genomes. The results were integrated to provide detailed information on gene content,  gene order, and types of clusters. While PGCfinder examined the completeness of the gene clusters, it could also suggest novel taxa-specific accessory genes related to dcw clusters in Lactobacillales genomes. The package will be freely available on the Python Package Index, Bioconda, and GitHub.
 
@@ -48,10 +48,10 @@ To evaluate PGCfinder, we used 17 major dcw genes defined by Megrian et al. [1] 
 
 ### usage
   ```
-  pip install pgc-finder
-  pgc-finder <working_dir> <TAXON> <target_path>
+  pip install pygcap
+  pygcap <working_dir> <TAXON> <target_path>
   ```
-  - pypi pgc-finder [(link)](https://pypi.org/project/pgc-finder/)
+  - pypi pygcap [(link)](https://pypi.org/project/pygcap/)
   - input data description
      1. working directory
      2. taxon (both name and taxid are available)
