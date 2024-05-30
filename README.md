@@ -45,6 +45,7 @@
 
 ### usage
   ```
+  pip install pgc-finder
   pgc-finder <working_dir> <TAXON> <target_path>
   ```
   
