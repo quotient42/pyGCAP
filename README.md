@@ -32,6 +32,7 @@ To evaluate PGCfinder, we used 17 major dcw genes defined by Megrian et al. [1] 
 
 1. `Python`
 2. `conda` environment
+
    - `blast` ([bioconda blast package](https://anaconda.org/bioconda/blast))
      ```
      conda install bioconda::blast
@@ -54,17 +55,18 @@ To evaluate PGCfinder, we used 17 major dcw genes defined by Megrian et al. [1] 
 
 ```
 pip install pygcap
-pygcap <working_dir> <TAXON> <target_path>
+conda activate ncbi_datasets
+pygcap <working_dir> <TAXON> <probe_file_path>
 ```
 
 - pypi pygcap [(link)](https://pypi.org/project/pygcap/)
 - input data description
   1.  working directory
   2.  taxon (both name and taxid are available)
-  3.  path of `target.tsv`
+  3.  path of `probe.tsv`
       - Probe Name (user defined)
-      - protein name (user defined)
-      - protein entry (UniProt)
+      - Prediction (user defined)
+      - Accession (UniProt entry)
 
 ---
 
