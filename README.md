@@ -3,9 +3,7 @@
 - [introduction](#introduction)
 - [program-flow](#program-flow)
 - [pre-requirement](#pre-requirement)
-- [tutorial](#tutorial)
-- [result description](#result-description)
-- [example](#example)
+- [usage](#usage)
 
 ---
 
@@ -28,33 +26,33 @@
 
 ### pre-requirement
 
-- 필요한 프로그램
-
   1. `Python`
   2. `conda` environment
-      - `blast`
-      - `datasets` & `dataformat` from NCBI
+      - `blast` [(bioconda blast package)](https://anaconda.org/bioconda/blast)
+        ```
+        conda install bioconda::blast
+        conda install bioconda/label/cf201901::blast
+        ```
+      - `datasets` & `dataformat` from NCBI [(conda-forge ncbi-datasets-cli package)](https://anaconda.org/conda-forge/ncbi-datasets-cli)
+        
+          ```
+          conda install conda-forge::ncbi-datasets-cli
+          ```
       - `MMseqs2` ([MMseqs2 github](https://github.com/soedinglab/MMseqs2))
+        ```
+        conda install -c conda-forge -c bioconda mmseqs2
+        ```
 
-- input data
-   1. working directory
-   2. taxon (both name and taxid are available)
-   3. path of `target.tsv`
-       - target name (user defined)
-       - protein name (user defined)
-       - protein entry (UniProt) 
----
+### usage
+  ```
+  pgc-finder <working_dir> <TAXON> <target_path>
+  ```
+  
+  - input data description
+     1. working directory
+     2. taxon (both name and taxid are available)
+     3. path of `target.tsv`
+         - target name (user defined)
+         - protein name (user defined)
+         - protein entry (UniProt) 
 
-### tutorial
-
----
-
-### result description
-
-1. `output/tsv`
-2. `output/img`
-3. `output/genus`
-
----
-
-### exmaple
