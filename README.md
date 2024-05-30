@@ -66,9 +66,10 @@ To evaluate PGCfinder, we used 17 major dcw genes defined by Megrian et al. [1] 
   pygcap . Facklamia pygcap/data/probe_sample.tsv
   pygcap . 66831 pygcap/data/probe_sample.tsv
   ```
-  1.  working directory
-  2.  taxon (both name and taxid are available)
+  1.  `working directory`
+  2.  `taxon` (both name and taxid are available)
   3.  path of `probe.tsv` ([sample file](https://github.com/jrim42/pyGCAP/blob/main/pygcap/data/probe_sample.tsv))
+
       - `Probe Name` (user defined)
       - `Prediction` (user defined)
       - `Accession` (UniProt entry)
@@ -77,6 +78,27 @@ To evaluate PGCfinder, we used 17 major dcw genes defined by Megrian et al. [1] 
 
 ### example
 ### (작성중)
+
+- A directory with the following structure will be created in your `working directory` with the name of the `TAXON` provided as input.
+  ```
+  📦 [TAXON_NAME]
+  ├─ data
+  │  ├─ assembly_report.tsv
+  │  ├─ metadata_target.tsv
+  │  └─ ...
+  ├─ input
+  │  ├─ [GENUS_01]
+  │  ├─ [GENUS_02]
+  │  └─ ...
+  ├─ output
+  │  ├─ genus
+  │  ├─ img
+  │  └─ tsv
+  └─ seqlib
+     ├─ blast_output.tsv
+     ├─ seqlib.tsv
+     └─ ...
+  ```
 
 - Profiling _dcw_ genes from pan-genomes of Lactobacillales (LAB)
 
