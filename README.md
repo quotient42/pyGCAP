@@ -23,7 +23,7 @@ To evaluate PGCfinder, we used 17 major dcw genes defined by Megrian et al. [1] 
 ### pipeline-flow
 
 <p align="center">
-  <img width="801" alt="flowchart" src="https://github.com/logcossin/lacto-dcw/assets/90167645/db6e78d4-16b2-4a18-925d-c3dbb6fb3494">
+  <img width="801" alt="flowchart" src="https://github.com/jrim42/pyGCAP/assets/90167645/906905ac-5a58-418f-a3c9-3cc422276480">
 </p>
 
 ---
@@ -52,25 +52,31 @@ To evaluate PGCfinder, we used 17 major dcw genes defined by Megrian et al. [1] 
 ---
 
 ### usage
+- pypi pygcap ([link](https://pypi.org/project/pygcap/))
 
-```
-pip install pygcap
-conda activate ncbi_datasets
-pygcap <working_dir> <TAXON> <probe_file_path>
-```
+  ```python
+  pip install pygcap
+  conda activate ncbi_datasets
+  pygcap <working_dir> <TAXON> <probe_file_path>
+  ```
 
-- pypi pygcap [(link)](https://pypi.org/project/pygcap/)
-- input data description
+- input argument description
+  ```python
+  ### usage example
+  pygcap . Facklamia pygcap/data/probe_sample.tsv
+  pygcap . 66831 pygcap/data/probe_sample.tsv
+  ```
   1.  working directory
   2.  taxon (both name and taxid are available)
-  3.  path of `probe.tsv`
-      - Probe Name (user defined)
-      - Prediction (user defined)
-      - Accession (UniProt entry)
+  3.  path of `probe.tsv` ([sample file](https://github.com/jrim42/pyGCAP/blob/main/pygcap/data/probe_sample.tsv))
+      - `Probe Name` (user defined)
+      - `Prediction` (user defined)
+      - `Accession` (UniProt entry)
 
 ---
 
 ### example
+### (작성중)
 
 - Profiling _dcw_ genes from pan-genomes of Lactobacillales (LAB)
 
