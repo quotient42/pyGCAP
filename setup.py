@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='pygcap',
-    version='0.0.1',
+    version='0.0.3',
     description='Python package for probe-based gene cluster finding in large microbial genome database',
     author='jsrim',
     author_email='comfortindex@naver.com',

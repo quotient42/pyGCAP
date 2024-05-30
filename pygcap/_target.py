@@ -84,7 +84,7 @@ def save_fasta(df, filename):
         for index, row in df.iterrows():
             if row['protein_id'] == '-' or pd.isna(row['protein_id']):
                 continue
-            header = f">{row['target name']} {row['protein_id']} [{row['organism_name']}]\n"
+            header = f">{row['Probe Name']} {row['protein_id']} [{row['organism_name']}]\n"
             sequence = str(row['sequence'])
             seq_lines = [sequence[i:i+50] for i in range(0, len(sequence), 50)]
             file.write(header)

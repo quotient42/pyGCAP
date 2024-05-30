@@ -23,7 +23,7 @@ def count_blastp_result(project_info):
     target_df = pd.read_csv(f"{project_info['data']}/metadata_target.tsv", sep='\t')
     assembly_df = pd.read_csv(f"{project_info['output']}/tsv/assembly_report_sum.tsv", sep='\t')
 
-    target = target_df['target name'].values.tolist()
+    target = target_df['Probe Name'].values.tolist()
     target2 = target_df['Prediction'].values.tolist()
 
     name = assembly_df['Organism Name'].values.tolist() 
