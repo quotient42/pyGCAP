@@ -1,7 +1,8 @@
-# pgc-finder
+# PGCfinder
+PGCfinder: A Python Package for Probe-based Gene Cluster Finding in Large Microbial Genome Database
 
 - [introduction](#introduction)
-- [program-flow](#program-flow)
+- [pipeline-flow](#pipeline-flow)
 - [pre-requirement](#pre-requirement)
 - [usage](#usage)
 - [example](#example)
@@ -10,14 +11,18 @@
 
 ### introduction
 
+Bacterial gene clusters provide insights into metabolism and evolution, and facilitate biotechnological applications. We developed PGCfinder, a Python package for probe-based gene cluster discovery. This pipeline uses sequence search and analysis tools and public databases (e.g. BLAST,  MMSeqs2,  UniProt, and NCBI) to predict potential gene clusters by user-provided probe genes. We tested the pipeline with the division and cell wall (dcw) gene cluster, crucial for cell division and peptidoglycan biosynthesis. 
 
-* this repository was built for the guiding 2023-2024 winter URAP student [@jrim42](https://github.com/jrim42)
-* based on this paper - [Ancient origin and constrained evolution of the division and cell wall gene cluster in Bacteria](https://www.nature.com/articles/s41564-022-01257-y)
+To evaluate PGCfinder, we used 17 major dcw genes defined by Megrian et al. [1] as a probe set to search for gene clusters in 696 Lactobacillales genomes. The results were integrated to provide detailed information on gene content,  gene order, and types of clusters. While PGCfinder examined the completeness of the gene clusters, it could also suggest novel taxa-specific accessory genes related to dcw clusters in Lactobacillales genomes. The package will be freely available on the Python Package Index, Bioconda, and GitHub.
+
+[1] Megrian, D., et al. [Ancient origin and constrained evolution of the division and cell wall gene cluster in Bacteria](https://www.nature.com/articles/s41564-022-01257-y). Nat Microbiol 7, 2114–2127 (2022).
   
 ---
-### program-flow
+### pipeline-flow
 
-<img width="801" alt="flowchart" src="https://github.com/logcossin/lacto-dcw/assets/90167645/db6e78d4-16b2-4a18-925d-c3dbb6fb3494">
+<p align="center">
+  <img width="801" alt="flowchart" src="https://github.com/logcossin/lacto-dcw/assets/90167645/db6e78d4-16b2-4a18-925d-c3dbb6fb3494">
+</p>
 
 ---
 
@@ -25,12 +30,12 @@
 
   1. `Python`
   2. `conda` environment
-      - `blast` [(bioconda blast package)](https://anaconda.org/bioconda/blast)
+      - `blast` ([bioconda blast package](https://anaconda.org/bioconda/blast))
         ```
         conda install bioconda::blast
         conda install bioconda/label/cf201901::blast
         ```
-      - `datasets` & `dataformat` from NCBI [(conda-forge ncbi-datasets-cli package)](https://anaconda.org/conda-forge/ncbi-datasets-cli)
+      - `datasets` & `dataformat` from NCBI ([conda-forge ncbi-datasets-cli package](https://anaconda.org/conda-forge/ncbi-datasets-cli))
         
           ```
           conda install conda-forge::ncbi-datasets-cli
