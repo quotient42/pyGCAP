@@ -1,5 +1,5 @@
 '''
-    cluster_target  ˑˑˑˑˑˑˑˑˑˑˑˑˑ  to cluster & visualize target gene cluster
+    cluster_probe  ˑˑˑˑˑˑˑˑˑˑˑˑˑ  to cluster & visualize probe gene cluster
     ├── search_cluster  ˑˑˑˑˑˑˑˑˑ  to search gene cluster in each species data
     └── adjust_cluster  ˑˑˑˑˑˑˑˑˑ  to adjust cluster data for visualization
     classify_cluster_type  ˑˑˑˑˑˑ  to classify clusters into three type (C/F/D)
@@ -15,11 +15,11 @@ from ._visualize import visualize_cluster
 from ._visualize import visualize_cluster_type
 
 #===============================================================================
-def cluster_target(project_info):
-    print("<< clustering target genes...")
-    df = pd.read_csv(f"{project_info['data']}/target.tsv", sep='\t')
-    target_list = df['Prediction'].drop_duplicates().tolist()
-    init_color_dict(target_list)
+def cluster_probe(project_info):
+    print("<< clustering probe genes...")
+    df = pd.read_csv(f"{project_info['data']}/probe.tsv", sep='\t')
+    probe_list = df['Prediction'].drop_duplicates().tolist()
+    init_color_dict(probe_list)
 
     input_dir = project_info['input']
     input_len = project_info['input_len']
@@ -48,10 +48,10 @@ def cluster_target(project_info):
                 species = lines[1][1:].strip()
 
             genome_summary = pd.read_csv(f"{cur_dir}/genome_summary.tsv", sep='\t', comment='#')
-            target_list = pd.read_csv(f"{cur_dir}/target_merge.tsv", sep='\t', comment='#')
+            probe_list = pd.read_csv(f"{cur_dir}/probe_merge.tsv", sep='\t', comment='#')
             input_info = [accession, cur_dir, species]
 
-            cluster_summary = search_cluster(input_info, genome_summary, target_list)
+            cluster_summary = search_cluster(input_info, genome_summary, probe_list)
             adjust_cluster(input_info, cluster_summary, f"{path}/tmp")
 
         visualize_cluster(f"{path}/tmp", f"{output_dir}/genus", genus, color_dict)
@@ -61,9 +61,9 @@ def cluster_target(project_info):
     print(f"   └── clustering done (elapsed time: {round(total / 60, 3)} min)")
     
 #===============================================================================
-def search_cluster(input_info, genome_summary, target_summary):
+def search_cluster(input_info, genome_summary, probe_summary):
     df_gff = genome_summary
-    df_dcw = target_summary
+    df_dcw = probe_summary
 
     df_gff['Prediction'] = '----'
     df_gff['Prediction'] = df_gff.apply(_update_prediction, df_dcw=df_dcw, axis=1).fillna('----')
@@ -77,7 +77,7 @@ def search_cluster(input_info, genome_summary, target_summary):
     key_order = ["contig", "protein_id", "Prediction", "cluster", "block", "strand", "start", "end"]
     df_cluster = df_cluster[key_order]
 
-    cluster_summary = f"{input_info[1]}/target_cluster.tsv"
+    cluster_summary = f"{input_info[1]}/probe_cluster.tsv"
     
     with open(cluster_summary, 'w') as summary_file:
         summary_file.write(f"# {input_info[0]}\n# {input_info[2]}\n")
@@ -226,7 +226,7 @@ def _fill_blank_rows(group_data):
 
 #===============================================================================
 def classify_cluster_type(project_info):
-	print("<< classifying target gene cluster...")
+	print("<< classifying probe gene cluster...")
 	input_dir = project_info['input']
 	output_dir = project_info['output']
 	all_directories = [d for d in os.listdir(input_dir) if os.path.isdir(os.path.join(input_dir, d))]
@@ -241,7 +241,7 @@ def classify_cluster_type(project_info):
 					if not "GC" in accession:
 							continue
 					
-					filename = f"{input_dir}/{genus}/{accession}/target_cluster.tsv"
+					filename = f"{input_dir}/{genus}/{accession}/probe_cluster.tsv"
 					df = pd.read_csv(filename, sep='\t', comment='#')
 
 					protein_cnt = len(df[(df['Prediction'] != '----') & (df['cluster'] == True)])

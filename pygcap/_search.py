@@ -1,6 +1,6 @@
 '''
-    search_target  
-    └── search_by_species  ˑˑˑˑˑˑ  search target in each species using seqlib
+    search_probe  
+    └── search_by_species  ˑˑˑˑˑˑ  search probe in each species using seqlib
 
 '''
 
@@ -15,8 +15,8 @@ pd.set_option('display.expand_frame_repr', False)
 pd.set_option('display.max_colwidth', None)
 
 #==============================================================================
-def search_target(project_info):
-    print("<< searching target based on seqlib...")
+def search_probe(project_info):
+    print("<< searching probe based on seqlib...")
     input_dir = project_info['input']
     input_len = project_info['input_len']
     all_directories = [d for d in os.listdir(input_dir) if os.path.isdir(os.path.join(input_dir, d))]
@@ -45,12 +45,12 @@ def search_target(project_info):
 
             genome_summary = pd.read_csv(f"{cur_dir}/genome_summary.tsv", sep='\t', comment='#')
             input_info = [accession, cur_dir, species]
-            target_seq = search_by_species(input_info, genome_summary, seq_lib)  # target_seq.tsv
+            probe_seq = search_by_species(input_info, genome_summary, seq_lib)  # probe_seq.tsv
 
-            target_blast = pd.read_csv(f"{cur_dir}/target_blast2.tsv", sep='\t', comment='#')
+            probe_blast = pd.read_csv(f"{cur_dir}/probe_blast2.tsv", sep='\t', comment='#')
 
-            common_columns = [col for col in target_seq.columns if col not in ['RepName', 'repseq']]
-            merged_df = pd.merge(target_blast, target_seq, on=common_columns, how='outer')
+            common_columns = [col for col in probe_seq.columns if col not in ['RepName', 'repseq']]
+            merged_df = pd.merge(probe_blast, probe_seq, on=common_columns, how='outer')
             merged_df = merged_df.fillna('------')
             merged_df = merged_df.sort_values('Prediction')
 
@@ -60,7 +60,7 @@ def search_target(project_info):
             new_order = first_cols + remaining_cols
             merged_df = merged_df[new_order]
 
-            with open(f"{cur_dir}/target_merge.tsv", 'w') as summary_file:
+            with open(f"{cur_dir}/probe_merge.tsv", 'w') as summary_file:
                 summary_file.write(f"# {input_info[0]}\n# {input_info[2]}\n")
                 merged_df.to_csv(summary_file, sep='\t', index=False)
 
@@ -90,9 +90,9 @@ def search_by_species(input_info, genome_summary, seq_lib):
     hit_df = merged_df[['RepName', 'Prediction', 'contig', 'protein_id', 'strand', 'start', 'end', 'repseq']]
     hit_df = hit_df.sort_values(by='RepName')
 
-    target_seq = f"{input_info[1]}/target_seq.tsv"
+    probe_seq = f"{input_info[1]}/probe_seq.tsv"
 
-    with open(target_seq, 'w') as summary_file:
+    with open(probe_seq, 'w') as summary_file:
         summary_file.write(f"# {input_info[0]}\n# {input_info[2]}\n")
         hit_df.to_csv(summary_file, sep='\t', index=False)
 

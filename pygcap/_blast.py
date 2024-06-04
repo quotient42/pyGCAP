@@ -1,6 +1,6 @@
 '''
 	run_blastp
-	├── create_target_fasta  ˑˑˑˑ  to create FASTA file from target data.
+	├── create_probe_fasta  ˑˑˑˑ  to create FASTA file from probe data.
 	├── create_input_fasta  ˑˑˑˑˑ  to create FASTA file from input genome data
 	└── blast_data  ˑˑˑˑˑˑˑˑˑˑˑˑˑ  to get blast result from 'blastmakedb' and 'blastp'
 
@@ -16,7 +16,7 @@ def run_blastp(project_info):
 	input_dir = project_info['input']
 	start_time = time.time()
 
-	# create_target_fasta(project_info)
+	# create_probe_fasta(project_info)
 	create_input_fasta(project_info)
 	blast_data(project_info)      
 	split_blast_result(project_info)  
@@ -26,12 +26,12 @@ def run_blastp(project_info):
 	print(f"   └── blastp complete (elapsed time: {round(total / 60, 3)} min)")
 
 #===============================================================================
-def create_target_fasta(project_info):
-	print("<< creating target FASTA...")
+def create_probe_fasta(project_info):
+	print("<< creating probe FASTA...")
 	data_dir = project_info['data']
 
-	df = pd.read_csv(f"{data_dir}/target.tsv", sep="\t")
-	output_file = f"{data_dir}/target.fasta"
+	df = pd.read_csv(f"{data_dir}/probe.tsv", sep="\t")
+	output_file = f"{data_dir}/probe.fasta"
 	with open(output_file, 'w') as fasta_out:
 		for index, row in df.iterrows():
 			header = f">{row['name']} {row['protein id']} [{row['organism']}]\n"
@@ -87,7 +87,7 @@ def blast_data(project_info):
 	print("<< makeing blastdb...")
 	db_path = f"{project_info['seqlib']}/lacto.aa"
 	data_path = f"{project_info['seqlib']}/all.fasta"
-	target_path = f"{project_info['data']}/target.fasta"
+	probe_path = f"{project_info['data']}/probe.fasta"
 	output1_path = f"{project_info['seqlib']}/blast_output1.tsv"
 	output2_path = f"{project_info['seqlib']}/blast_output2.tsv"
 
@@ -105,7 +105,7 @@ def blast_data(project_info):
 	print("<< running blastp...")
 	blastp_command = [
 			'blastp',
-			'-query', target_path,
+			'-query', probe_path,
 			'-db', db_path,
 			'-evalue', "0.001",
 			'-outfmt', '6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore',
@@ -159,7 +159,7 @@ def split_blast_result(project_info):
 				matching_rows = matching_rows.drop(columns=['orgid', 'orgname'])
 				matching_rows = matching_rows.sort_values(by='qseqid')
 
-				# with open(f"{cur_dir}/target_blast.tsv", 'w', encoding='utf-8') as blast_file:
+				# with open(f"{cur_dir}/probe_blast.tsv", 'w', encoding='utf-8') as blast_file:
 				# 	blast_file.write(f"# {accession}\n")
 				# 	blast_file.write(f"# {species}\n")
 				# 	matching_rows.to_csv(blast_file, sep='\t', index=False)
@@ -170,12 +170,12 @@ def split_blast_result(project_info):
 				merged_df['Prediction'] = merged_df['TarName'].apply(lambda x: x.split('.')[0])
 				merged_df = merged_df[['TarName', 'Prediction', 'contig', 'protein_id', 'strand', 'start', 'end']]
 
-				with open(f"{cur_dir}/target_blast.tsv", 'w', encoding='utf-8') as blast_file:
+				with open(f"{cur_dir}/probe_blast.tsv", 'w', encoding='utf-8') as blast_file:
 					blast_file.write(f"# {accession}\n# {species}\n")
 					merged_df.to_csv(blast_file, sep='\t', index=False)
 				
 				merged_df.drop_duplicates(subset='protein_id', keep='first', inplace=True)
-				with open(f"{cur_dir}/target_blast2.tsv", 'w', encoding='utf-8') as blast_file:
+				with open(f"{cur_dir}/probe_blast2.tsv", 'w', encoding='utf-8') as blast_file:
 					blast_file.write(f"# {accession}\n# {species}\n")
 					merged_df.to_csv(blast_file, sep='\t', index=False)
 				

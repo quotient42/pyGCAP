@@ -11,13 +11,13 @@ from ._parse import parse_genome
 from ._blast import run_blastp
 from ._count import count_blastp_result
 from ._seqlib import create_seqlib
-from ._search import search_target
+from ._search import search_probe
 from ._count import count_mmseq_result
-from ._cluster import cluster_target
+from ._cluster import cluster_probe
 from ._cluster import classify_cluster_type
 from ._accessory import collect_accessory
 from ._profile import final_profile
-from ._target import process_target_data
+from ._probe import process_probe_data
 
 def get_taxon_name_from_taxid(taxid):
     base_url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
@@ -133,12 +133,12 @@ def process_genome_data(working_dir, TAXON):
     return TAXON
 
 
-def find_gene_cluster(working_dir, TAXON, target_path):
+def find_gene_cluster(working_dir, TAXON, probe_path):
     if not os.path.exists(working_dir):
         print("<< Working directory does not exist. Please provide a valid file path.")
         return
-    if not os.path.exists(target_path):
-        print("<< Target file does not exist. Please provide a valid file path.")
+    if not os.path.exists(probe_path):
+        print("<< Probe file does not exist. Please provide a valid file path.")
         return
 
     start_time = time.time()
@@ -159,15 +159,15 @@ def find_gene_cluster(working_dir, TAXON, target_path):
     organize_input_dir(project_info)
     parse_genome(project_info)
 
-    process_target_data(project_info, target_path)
+    process_probe_data(project_info, probe_path)
     run_blastp(project_info)
     count_blastp_result(project_info)
 
     create_seqlib(project_info)
-    search_target(project_info)
+    search_probe(project_info)
     count_mmseq_result(project_info, TAXON)
 
-    cluster_target(project_info)
+    cluster_probe(project_info)
     classify_cluster_type(project_info)
 
     collect_accessory(project_info)

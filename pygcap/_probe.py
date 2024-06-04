@@ -78,7 +78,7 @@ def fetch_protein_data(accession):
         return {}
 
 def save_fasta(df, filename):
-    print("<< Processing target data into FASTA file...")
+    print("<< Processing probe data into FASTA file...")
 
     with open(filename, "w") as file:
         for index, row in df.iterrows():
@@ -91,21 +91,21 @@ def save_fasta(df, filename):
             for line in seq_lines:
                 file.write(line + "\n")
 
-def process_target_data(project_info, target_original_path):
-    target_new_path = f"{project_info['data']}/target.tsv"
-    meta_file_path = f"{project_info['data']}/metadata_target.tsv"
-    fasta_file_path = f"{project_info['data']}/target.fasta"
+def process_probe_data(project_info, probe_original_path):
+    probe_new_path = f"{project_info['data']}/probe.tsv"
+    meta_file_path = f"{project_info['data']}/metadata_probe.tsv"
+    fasta_file_path = f"{project_info['data']}/probe.fasta"
     
     try:
-        shutil.copy(target_original_path, target_new_path)
-        print("<< Searching targets from UniprotKB...")
+        shutil.copy(probe_original_path, probe_new_path)
+        print("<< Searching probes from UniprotKB...")
     except FileNotFoundError:
         print("<< [Error] File not found. Please provide a valid file path.")
     
-    df = pd.read_csv(target_new_path, sep='\t')
+    df = pd.read_csv(probe_new_path, sep='\t')
 
     data_list = []
-    for accession in df['accession']:
+    for accession in df['Accession']:
         if accession == '-':
             data = {}
         else:

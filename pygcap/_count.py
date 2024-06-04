@@ -20,11 +20,11 @@ def count_blastp_result(project_info):
     output_dir = project_info['output']
 
     result_df = pd.read_csv(f"{project_info['seqlib']}/blast_output1.tsv", sep='\t')
-    target_df = pd.read_csv(f"{project_info['data']}/metadata_target.tsv", sep='\t')
+    probe_df = pd.read_csv(f"{project_info['data']}/metadata_probe.tsv", sep='\t')
     assembly_df = pd.read_csv(f"{project_info['output']}/tsv/assembly_report_sum.tsv", sep='\t')
 
-    target = target_df['Probe Name'].values.tolist()
-    target2 = target_df['Prediction'].values.tolist()
+    probe = probe_df['Probe Name'].values.tolist()
+    probe2 = probe_df['Prediction'].values.tolist()
 
     name = assembly_df['Organism Name'].values.tolist() 
     accession = assembly_df['Accession'].values.tolist() 
@@ -34,7 +34,7 @@ def count_blastp_result(project_info):
         'name': name,
     })
 
-    for t in target:
+    for t in probe:
         new_df[t] = 0
 
     for index, row in result_df.iterrows():
@@ -46,17 +46,17 @@ def count_blastp_result(project_info):
 
     new_df.to_csv(f"{output_dir}/tsv/contents_blastp_species1.tsv", sep='\t', index=False)
 
-    target_column_indices = {key: [] for key in target2}
+    probe_column_indices = {key: [] for key in probe2}
     first_row  = new_df.columns.tolist()
 
-    for key in target_column_indices:
+    for key in probe_column_indices:
         for index, column_name in enumerate(first_row):
             if key in column_name:
-                target_column_indices[key].append(index)
+                probe_column_indices[key].append(index)
 
     collapsed_df = new_df[['accession', 'name']].copy()
 
-    for key, indices in target_column_indices.items():
+    for key, indices in probe_column_indices.items():
         new_col_values = []
         for index, row in new_df.iterrows():
             value_sum = sum(row[idx] for idx in indices)
@@ -81,62 +81,62 @@ def count_blastp_result(project_info):
 
 #===============================================================================
 def count_mmseq_result(project_info, TAXON):
-    print("<< counting target by species and genus level...")
+    print("<< counting probe by species and genus level...")
     input_dir = project_info['input']
     output_dir = project_info['output']
-    df = pd.read_csv(f"{project_info['data']}/target.tsv", sep='\t')
-    target_names = df['Prediction'].drop_duplicates().tolist()
+    df = pd.read_csv(f"{project_info['data']}/probe.tsv", sep='\t')
+    probe_names = df['Prediction'].drop_duplicates().tolist()
 
     all_directories = [d for d in os.listdir(input_dir) if os.path.isdir(os.path.join(input_dir, d))]
     all_directories = [d for d in all_directories if d != 'output' and not d.startswith('output/')]
 
     start_time = time.time()
 
-    target_cnt_list_1 = []
+    probe_cnt_list_1 = []
     for genus in all_directories:
         genus_df_list = []
         for accession in os.listdir(os.path.join(input_dir, genus)):
             if not "GC" in accession:
                 continue
-            file_path = f"{input_dir}/{genus}/{accession}/target_seq.tsv"
-            tmp = count_mmseq_species(file_path, target_names)
+            file_path = f"{input_dir}/{genus}/{accession}/probe_seq.tsv"
+            tmp = count_mmseq_species(file_path, probe_names)
             genus_df_list.append(tmp)
         
         if genus_df_list:
             genus_df = pd.concat(genus_df_list, ignore_index=True)
-            target_cnt_list_1.append(genus_df)
+            probe_cnt_list_1.append(genus_df)
 
-    target_cnt_1 = pd.concat(target_cnt_list_1, ignore_index=True)
-    target_cnt_1 = target_cnt_1.sort_values("name")
-    target_cnt_1.to_csv(f"{output_dir}/tsv/contents_mmseq_species.tsv", sep='\t', index=False)
+    probe_cnt_1 = pd.concat(probe_cnt_list_1, ignore_index=True)
+    probe_cnt_1 = probe_cnt_1.sort_values("name")
+    probe_cnt_1.to_csv(f"{output_dir}/tsv/contents_mmseq_species.tsv", sep='\t', index=False)
 
-    count_mmseq_genus(output_dir, target_cnt_1)
+    count_mmseq_genus(output_dir, probe_cnt_1)
     visualize_heatmap(output_dir, "contents_mmseq_species", 0)
     visualize_heatmap(output_dir, "contents_mmseq_genus", 1)
-    target_sum = target_cnt_1[target_names]
-    target_sum = target_sum.sum(axis=0).reset_index()
-    target_sum.to_csv(f"{output_dir}/tsv/target_frequency.tsv", sep='\t', index=False)
+    probe_sum = probe_cnt_1[probe_names]
+    probe_sum = probe_sum.sum(axis=0).reset_index()
+    probe_sum.to_csv(f"{output_dir}/tsv/probe_frequency.tsv", sep='\t', index=False)
     visualize_freq(output_dir, TAXON)
 
-    target_cnt_list_2 = []
+    probe_cnt_list_2 = []
     for genus in all_directories:
         genus_df_list = []
         for accession in os.listdir(os.path.join(input_dir, genus)):
             if not "GC" in accession:
                 continue
-            file_path = f"{input_dir}/{genus}/{accession}/target_merge.tsv"
-            tmp = count_mmseq_species(file_path, target_names)
+            file_path = f"{input_dir}/{genus}/{accession}/probe_merge.tsv"
+            tmp = count_mmseq_species(file_path, probe_names)
             genus_df_list.append(tmp)
         
         if genus_df_list:
             genus_df = pd.concat(genus_df_list, ignore_index=True)
-            target_cnt_list_2.append(genus_df)
+            probe_cnt_list_2.append(genus_df)
 
-    target_cnt_2 = pd.concat(target_cnt_list_2, ignore_index=True)
-    target_cnt_2 = target_cnt_2.sort_values("name")
-    target_cnt_2.to_csv(f"{output_dir}/tsv/contents_merge_species.tsv", sep='\t', index=False)
+    probe_cnt_2 = pd.concat(probe_cnt_list_2, ignore_index=True)
+    probe_cnt_2 = probe_cnt_2.sort_values("name")
+    probe_cnt_2.to_csv(f"{output_dir}/tsv/contents_merge_species.tsv", sep='\t', index=False)
 
-    count_merge_genus(output_dir, target_cnt_2)
+    count_merge_genus(output_dir, probe_cnt_2)
     visualize_heatmap(output_dir, "contents_merge_species", 0)
     visualize_heatmap(output_dir, "contents_merge_genus", 1)
 
@@ -144,23 +144,23 @@ def count_mmseq_result(project_info, TAXON):
     total = end_time - start_time
     print(f"   └── counting done (elapsed time: {round(total / 60, 3)} min)")
 
-def count_mmseq_species(file_path, target_names):
+def count_mmseq_species(file_path, probe_names):
     with open(file_path, 'r') as f:
         accession = f.readline().split('#')[-1].strip()
         name = f.readline().split('#')[-1].strip()
 
     df = pd.read_csv(file_path, sep='\t', comment='#')
 
-    target_cnt = df['Prediction'].value_counts().reset_index()
-    target_cnt.columns = ['protein', 'count']
+    probe_cnt = df['Prediction'].value_counts().reset_index()
+    probe_cnt.columns = ['protein', 'count']
 
-    target_cnt = pd.DataFrame({'protein': target_names}).merge(target_cnt, on='protein', how='left').fillna(0)
-    target_cnt = target_cnt.astype({'count': int})
+    probe_cnt = pd.DataFrame({'protein': probe_names}).merge(probe_cnt, on='protein', how='left').fillna(0)
+    probe_cnt = probe_cnt.astype({'count': int})
 
-    result_df = pd.DataFrame(columns=['accession', 'name'] + target_names)
+    result_df = pd.DataFrame(columns=['accession', 'name'] + probe_names)
     result_df.loc[0, 'accession'] = accession
     result_df.loc[0, 'name'] = name
-    result_df.loc[0, target_cnt['protein']] = target_cnt['count'].values
+    result_df.loc[0, probe_cnt['protein']] = probe_cnt['count'].values
 
     return result_df
 
@@ -184,7 +184,7 @@ def count_merge_genus(output_dir, df):
 
 #===============================================================================
 def count_mmseq_cluster(project_info):
-    print("<< counting target by species and genus level...")
+    print("<< counting probe by species and genus level...")
     input_dir = project_info['input']
     output_dir = project_info['output']
 
@@ -209,7 +209,7 @@ def count_mmseq_cluster(project_info):
         for accession in os.listdir(os.path.join(input_dir, genus)):
             if not "GC" in accession:
                 continue
-            file_path = f"{input_dir}/{genus}/{accession}/target_seq.tsv"
+            file_path = f"{input_dir}/{genus}/{accession}/probe_seq.tsv"
         
             data_df = pd.read_csv(file_path, sep='\t', comment='#')
             seq_lib = pd.concat([seq_lib, pd.DataFrame({accession: [0] * len(seq_lib)})], axis=1)

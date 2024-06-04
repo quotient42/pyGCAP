@@ -31,14 +31,14 @@ def final_profile(project_info):
 							lines = file.readlines()
 							species = lines[1][1:].strip()
 
-					target_final = pd.read_csv(f"{cur_dir}/target_final.tsv", sep='\t', comment='#')
+					probe_final = pd.read_csv(f"{cur_dir}/probe_final.tsv", sep='\t', comment='#')
 
 					new_row = pd.Series(0, index=profile.columns)
             
 					new_row['accession'] = accession
 					new_row['name'] = species
 					
-					for repname in target_final['RepName']:
+					for repname in probe_final['RepName']:
 							if repname in profile.columns:
 									new_row[repname] += 1
 					

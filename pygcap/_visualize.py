@@ -127,7 +127,7 @@ def visualize_cluster(input_path, output_path, genus, color_dict):
 
 #------------------------------------------------------------
 def visualize_freq(output_dir, TAXON):
-  df = pd.read_csv(f"{output_dir}/tsv/target_frequency.tsv", sep='\t', comment='#')
+  df = pd.read_csv(f"{output_dir}/tsv/probe_frequency.tsv", sep='\t', comment='#')
   df.set_index('index', inplace=True)
 
   bar_width = 0.8
@@ -140,7 +140,7 @@ def visualize_freq(output_dir, TAXON):
   for i, bar in enumerate(ax.patches):
       bar.set_color(bar_colors[i % len(bar_colors)])
 
-  plt.title(f'Total frequency of target gene in {TAXON}', pad=20)
+  plt.title(f'Total frequency of probe gene in {TAXON}', pad=20)
 
   ax.grid(axis='y', linestyle='-', alpha=0.3)
   ax.spines['right'].set_visible(False)
@@ -150,55 +150,58 @@ def visualize_freq(output_dir, TAXON):
   ax.set_ylabel('')
   ax.set_ylim()
 
-  plt.savefig(f"{output_dir}/img/target_frequency.png")
+  plt.savefig(f"{output_dir}/img/probe_frequency.png")
   plt.close(fig)
 
 #------------------------------------------------------------
 def visualize_heatmap(output_dir, filename, mode):
-  main_df = pd.read_csv(f"{output_dir}/tsv/{filename}.tsv", sep='\t', comment='#')
+    main_df = pd.read_csv(f"{output_dir}/tsv/{filename}.tsv", sep='\t', comment='#')
 
-  main_df = main_df.fillna(0)
+    # fillna 이후에 데이터 타입을 명시적으로 변환
+    main_df = main_df.fillna(0).infer_objects(copy=False)
   
-  if mode == 0 or mode == 2:
-    main_df = main_df.sort_values(by='name')
-    heatmap_data = main_df.iloc[:, 2:]
-  elif mode == 1:
-    main_df = main_df.sort_values(by='genus')
-    heatmap_data = main_df.iloc[:, 1:]
+    if mode == 0 or mode == 2:
+        main_df = main_df.sort_values(by='name')
+        heatmap_data = main_df.iloc[:, 2:]
+    elif mode == 1:
+        main_df = main_df.sort_values(by='genus')
+        heatmap_data = main_df.iloc[:, 1:]
 
-  heatmap_data = heatmap_data.copy()
-  heatmap_data[heatmap_data == 0] = np.nan
+    heatmap_data = heatmap_data.copy()
+    heatmap_data[heatmap_data == 0] = np.nan
 
-  cmap = LinearSegmentedColormap.from_list('custom_cmap', ['#FFFFFF', '#999EBC', '#666E9B', '#4D568A', '#333D79'], N=256)
+    # 데이터의 전치(transpose)
+    heatmap_data = heatmap_data.T
 
-  num_species = len(heatmap_data)
-  num_features = len(heatmap_data.columns)
+    cmap = LinearSegmentedColormap.from_list('custom_cmap', ['#FFFFFF', '#999EBC', '#666E9B', '#4D568A', '#333D79'], N=256)
 
-  if mode == 0 or mode == 1:
-    figsize_width = min(15, num_features * 0.4)
-    figsize_height = max(20, num_species * 0.2)
-  elif mode == 2:
-    figsize_width = max(15, num_features * 0.3)
-    figsize_height = max(20, num_species * 0.2)
+    num_features = len(heatmap_data)
+    num_species = len(heatmap_data.columns)
+
+    if mode == 0 or mode == 1:
+        figsize_width = min(20, num_species * 0.4)
+        figsize_height = max(15, num_features * 0.2)
+    elif mode == 2:
+        figsize_width = max(20, num_species * 0.3)
+        figsize_height = max(15, num_features * 0.2)
   
-  plt.figure(figsize=(figsize_width, figsize_height))
-  plt.imshow(heatmap_data.values, cmap=cmap, interpolation='nearest', aspect='auto', vmin=0, vmax=1)
+    fig, ax = plt.subplots(figsize=(figsize_width, figsize_height))
+    cax = ax.imshow(heatmap_data.values, cmap=cmap, interpolation='nearest', aspect='auto', vmin=0, vmax=1)
 
-  plt.xticks(np.arange(num_features), heatmap_data.columns, rotation='vertical', ha='center')
-  plt.tick_params(axis='x', bottom=False, top=True, labelbottom=False, labeltop=True)
+    ax.set_xticks(np.arange(num_species))
+    ax.set_xticklabels(main_df['name'] if mode != 1 else main_df['genus'], rotation='vertical', ha='center')
+    ax.tick_params(axis='x', bottom=False, top=True, labelbottom=False, labeltop=True)
 
-  italic_font = FontProperties()
-  italic_font.set_style('italic')
+    italic_font = FontProperties()
+    italic_font.set_style('italic')
 
-  if mode == 0 or mode == 2:
-    plt.yticks(np.arange(num_species), [name.split()[0] + ' ' + name.split()[1] for name in main_df['name']],
-              fontproperties=italic_font)
-  elif mode == 1:
-    plt.yticks(np.arange(len(heatmap_data)), main_df['genus'], fontproperties=italic_font)
+    ax.set_yticks(np.arange(num_features))
+    ax.set_yticklabels(heatmap_data.index, fontproperties=italic_font)
 
-  plt.tick_params(axis='y', which='both', left=False, right=False,
-                  labelleft=True, labelright=False)
-  plt.tight_layout()
+    ax.tick_params(axis='y', which='both', left=False, right=False, labelleft=True, labelright=False)
 
-  plt.savefig(f'{output_dir}/img/{filename}.png')
-  plt.close()
+    # tight_layout 적용
+    plt.tight_layout()
+
+    plt.savefig(f'{output_dir}/img/{filename}.png')
+    plt.close()

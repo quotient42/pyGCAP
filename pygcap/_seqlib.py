@@ -43,28 +43,28 @@ def search_repseq(project_info):
 	seq_df['subseq_tmp'] = seq_df['subseq'].apply(lambda x: float(remove_non_numeric(x)))
 	seq_df = seq_df.sort_values('subseq_tmp')
 
-	target_df = pd.read_csv(f"{seqlib_dir}/blast_output2.tsv", sep='\t')
-	target_df['Accession_tmp'] = target_df['Accession'].apply(lambda x: float(remove_non_numeric(x)))
+	probe_df = pd.read_csv(f"{seqlib_dir}/blast_output2.tsv", sep='\t')
+	probe_df['Accession_tmp'] = probe_df['Accession'].apply(lambda x: float(remove_non_numeric(x)))
 
-	target_df['repseq'] = "-"
+	probe_df['repseq'] = "-"
 
-	for index, row in target_df.iterrows():
+	for index, row in probe_df.iterrows():
 			accession = row['Accession_tmp']
 			low = 0
 			high = len(seq_df) - 1
 			while low <= high:
 					mid = (low + high) // 2
 					if seq_df.iloc[mid]['subseq_tmp'] == accession:
-							target_df.at[index, 'repseq'] = seq_df.iloc[mid]['repseq']
+							probe_df.at[index, 'repseq'] = seq_df.iloc[mid]['repseq']
 							break
 					elif seq_df.iloc[mid]['subseq_tmp'] < accession:
 							low = mid + 1
 					else:
 							high = mid - 1
 
-	target_df = target_df[target_df['repseq'] != '-']
-	target_df = target_df[['Prediction', 'Accession', 'repseq', 'Query']]
-	target_df.to_csv(f"{seqlib_dir}/seqlib_rep.tsv", sep='\t', index=False)
+	probe_df = probe_df[probe_df['repseq'] != '-']
+	probe_df = probe_df[['Prediction', 'Accession', 'repseq', 'Query']]
+	probe_df.to_csv(f"{seqlib_dir}/seqlib_rep.tsv", sep='\t', index=False)
 
 #===============================================================================
 def construct_seqlib(project_info):
@@ -85,10 +85,10 @@ def construct_seqlib(project_info):
 		seq_df = seq_df.sort_values('RepSeq_tmp')
 		seq_df['Prediction'] = pd.Series([], dtype=object)
 
-		target_text = pd.read_csv(f"{seqlib_dir}/seqlib_rep.tsv", sep='\t', comment='#')
-		target_text['repseq_tmp'] = target_text['repseq'].apply(lambda x: float(remove_non_numeric(x)))
+		probe_text = pd.read_csv(f"{seqlib_dir}/seqlib_rep.tsv", sep='\t', comment='#')
+		probe_text['repseq_tmp'] = probe_text['repseq'].apply(lambda x: float(remove_non_numeric(x)))
 		
-		for index, row in target_text.iterrows():
+		for index, row in probe_text.iterrows():
 				low = 0
 				high = len(seq_df) - 1
 				while low <= high:

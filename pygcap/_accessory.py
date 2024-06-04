@@ -37,7 +37,7 @@ def collect_accessory(project_info):
                 species = lines[1][1:].strip()
 
             genome_summary = pd.read_csv(f"{cur_dir}/genome_summary.tsv", sep='\t', comment='#')
-            cluster = pd.read_csv(f"{cur_dir}/target_cluster.tsv", sep='\t', comment='#')
+            cluster = pd.read_csv(f"{cur_dir}/probe_cluster.tsv", sep='\t', comment='#')
             input_info = [accession, cur_dir, species]
 
             df = cluster.copy()
@@ -130,15 +130,15 @@ def collect_accessory(project_info):
 
             genome_summary = pd.read_csv(f"{cur_dir}/genome_summary.tsv", sep='\t', comment='#')
             input_info = [accession, cur_dir, species]
-            target_acc = search_by_species(input_info, genome_summary, acc_lib)
-            target_seq = pd.read_csv(f"{cur_dir}/target_seq.tsv", sep='\t', comment='#')
+            probe_acc = search_by_species(input_info, genome_summary, acc_lib)
+            probe_seq = pd.read_csv(f"{cur_dir}/probe_seq.tsv", sep='\t', comment='#')
 
-            common_columns = [col for col in target_acc.columns if col != 'Prediction']
-            target_final = pd.merge(target_seq[common_columns], target_acc[common_columns], how='outer')
+            common_columns = [col for col in probe_acc.columns if col != 'Prediction']
+            probe_final = pd.merge(probe_seq[common_columns], probe_acc[common_columns], how='outer')
 
-            with open(f"{cur_dir}/target_final.tsv", 'w') as summary_file:
+            with open(f"{cur_dir}/probe_final.tsv", 'w') as summary_file:
                 summary_file.write(f"# {input_info[0]}\n# {input_info[2]}\n")
-                target_final.to_csv(summary_file, sep='\t', index=False)
+                probe_final.to_csv(summary_file, sep='\t', index=False)
 
     end_time = time.time()
     total = end_time - start_time
@@ -166,9 +166,9 @@ def search_by_species(input_info, genome_summary, seq_lib):
     hit_df = merged_df[['RepName', 'contig', 'protein_id', 'strand', 'start', 'end', 'repseq']]
     hit_df = hit_df.sort_values(by='RepName')
 
-    target_acc = f"{input_info[1]}/target_acc.tsv"
+    probe_acc = f"{input_info[1]}/probe_acc.tsv"
 
-    with open(target_acc, 'w') as summary_file:
+    with open(probe_acc, 'w') as summary_file:
         summary_file.write(f"# {input_info[0]}\n# {input_info[2]}\n")
         hit_df.to_csv(summary_file, sep='\t', index=False)
 
