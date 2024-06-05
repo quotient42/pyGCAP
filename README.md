@@ -74,6 +74,22 @@ To evaluate PGCfinder, we used 17 major dcw genes defined by Megrian et al. [1] 
       - `Prediction` (user defined)
       - `Accession` (UniProt entry)
 
+### options
+### (작성중)
+```
+—-no
+  vizualization
+  mmseqs2
+
+—-skip 
+  datasets
+  unzip
+  dataformat
+  mmseqs2
+  uniprot
+  parsing
+```
+
 ---
 
 ### example
