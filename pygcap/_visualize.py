@@ -178,19 +178,19 @@ def visualize_heatmap(output_dir, filename, mode):
     num_features = len(heatmap_data)
     num_species = len(heatmap_data.columns)
 
-    if mode == 0 or mode == 1:
+    if mode == 1:
         figsize_width = min(20, num_species * 0.4)
-        figsize_height = max(15, num_features * 0.2)
-    elif mode == 2:
+        figsize_height = min(15, num_features * 0.4)
+    elif mode == 0 or mode == 2:
         figsize_width = max(20, num_species * 0.3)
-        figsize_height = max(15, num_features * 0.2)
+        figsize_height = max(15, num_features * 0.3)
   
     fig, ax = plt.subplots(figsize=(figsize_width, figsize_height))
     cax = ax.imshow(heatmap_data.values, cmap=cmap, interpolation='nearest', aspect='auto', vmin=0, vmax=1)
 
     ax.set_xticks(np.arange(num_species))
     ax.set_xticklabels(main_df['name'] if mode != 1 else main_df['genus'], rotation='vertical', ha='center')
-    ax.tick_params(axis='x', bottom=False, top=True, labelbottom=False, labeltop=True)
+    ax.tick_params(axis='x', bottom=True, top=False, labelbottom=True, labeltop=False)
 
     italic_font = FontProperties()
     italic_font.set_style('italic')

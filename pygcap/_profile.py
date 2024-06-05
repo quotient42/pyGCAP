@@ -35,6 +35,7 @@ def final_profile(project_info):
 
 					new_row = pd.Series(0, index=profile.columns)
             
+					new_row['accession'] = new_row['accession'].astype(str)
 					new_row['accession'] = accession
 					new_row['name'] = species
 					
@@ -65,4 +66,4 @@ def final_profile(project_info):
 	simplified_profile = simplified_profile[rearranged_columns]
 
 	simplified_profile.to_csv(f"{output_dir}/tsv/final_profile_2.tsv", sep='\t', index=False)
-	visualize_heatmap(output_dir, 'final_profile_2', 0)
+	visualize_heatmap(output_dir, 'final_profile_2', 2)

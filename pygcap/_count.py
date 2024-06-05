@@ -59,7 +59,7 @@ def count_blastp_result(project_info):
     for key, indices in probe_column_indices.items():
         new_col_values = []
         for index, row in new_df.iterrows():
-            value_sum = sum(row[idx] for idx in indices)
+            value_sum = sum(row.iloc[idx] for idx in indices)
             new_col_values.append(value_sum)
         collapsed_df[key] = new_col_values
 
