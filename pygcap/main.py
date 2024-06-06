@@ -62,7 +62,7 @@ def search_taxon_by_name(name):
         print("[Error] something went wrong while searching taxon by name.")
         exit()
 
-def process_genome_data(working_dir, TAXON):
+def process_genome_data(working_dir, TAXON, skip_ncbi, skip_mmseqs2):
     if TAXON.isdigit():
         taxid = TAXON
         TAXON = get_taxon_name_from_taxid(TAXON)
@@ -74,45 +74,27 @@ def process_genome_data(working_dir, TAXON):
     DATA_DIR = f"{ROOT_DIR}/data"
     INPUT_DIR = f"{ROOT_DIR}/input"
 
-    answer = input(f">> Need to download new genome data? (y/n): ")
-    if answer.lower() == "y":
+    if not skip_ncbi:
         print("<< Downloading genome data...")
         subprocess.run(["datasets", "download", "genome", "taxon", TAXON, "--reference", "--include", "protein,gff3,gbff", "--filename", f"{working_dir}/{TAXON}.zip"])
-    else:
-        print("<< Skip.")
-
-    answer = input(">> Need to unzip genome data? (y/n): ")
-    if answer.lower() == "y":
         print("<< Unzipping files...")
         subprocess.run(["unzip", f"{working_dir}/{TAXON}.zip", "-d", f"{working_dir}/{TAXON}"])
-        
         os.rename(f"{ROOT_DIR}/ncbi_dataset/data", INPUT_DIR)
         os.rmdir(f"{ROOT_DIR}/ncbi_dataset")
         if not os.path.exists(DATA_DIR):
             os.mkdir(DATA_DIR)
-    else:
-        print("<< Skip.")
-
-    answer = input(">> Need to format genome and protein data? (y/n): ")
-    if answer.lower() == "y":
         print("<< Formatting data...")
         subprocess.run(f"dataformat tsv genome --inputfile {INPUT_DIR}/assembly_data_report.jsonl --fields accession,organism-name,organism-tax-id,source_database,checkm-completeness,checkm-contamination,assmstats-total-sequence-len,annotinfo-featcount-gene-total,annotinfo-featcount-gene-protein-coding,assminfo-bioproject,assminfo-biosample-accession,wgs-project-accession,wgs-url > {DATA_DIR}/assembly_report.tsv", shell=True)
-
         print("<< Concatenating protein files...")
         protein_files = glob.glob(f"{INPUT_DIR}/GCF*/protein.faa")
         with open(f"{DATA_DIR}/{TAXON}.faa", "wb") as outfile:
             for protein_file in protein_files:
                 with open(protein_file, "rb") as infile:
                     outfile.write(infile.read())
-    else:
-        print("<< Skip.")
 
-    answer = input(">> Need to run mmseqs2? (y/n): ")
-    if answer.lower() == "y":
+    if not skip_mmseqs2:
         print("<< Clustering protein sequences...")
         subprocess.run(["mmseqs", "easy-cluster", f"{DATA_DIR}/{TAXON}.faa", f"{DATA_DIR}/result", f"{DATA_DIR}/tmp", "--min-seq-id", "0.5", "--threads", "55"])
-    else:
-        print("<< Skip.")
 
     print("<< Organizing directories...")
     output_dir = f"{ROOT_DIR}/output"
@@ -133,7 +115,9 @@ def process_genome_data(working_dir, TAXON):
     return TAXON
 
 
-def find_gene_cluster(working_dir, TAXON, probe_path):
+def find_gene_cluster(working_dir, TAXON, probe_path, 
+                      skip_ncbi=False, skip_mmseqs2=False, 
+                      skip_parsing=False, skip_uniprot=False, skip_blast=False):
     if not os.path.exists(working_dir):
         print("<< Working directory does not exist. Please provide a valid file path.")
         return
@@ -143,7 +127,7 @@ def find_gene_cluster(working_dir, TAXON, probe_path):
 
     start_time = time.time()
 
-    TAXON = process_genome_data(working_dir, TAXON)
+    TAXON = process_genome_data(working_dir, TAXON, skip_ncbi, skip_mmseqs2)
 
     project_info = {
             'project_name': TAXON + " gene cluster",
@@ -157,10 +141,13 @@ def find_gene_cluster(working_dir, TAXON, probe_path):
     input_len = sum_assembly_report(project_info)
     project_info['input_len'] = input_len
     organize_input_dir(project_info)
-    parse_genome(project_info)
 
-    process_probe_data(project_info, probe_path)
-    run_blastp(project_info)
+    if not skip_parsing:
+        parse_genome(project_info)
+    if not skip_uniprot:
+        process_probe_data(project_info, probe_path)
+    if not skip_blast:
+        run_blastp(project_info)
     count_blastp_result(project_info)
 
     create_seqlib(project_info)
