@@ -6,7 +6,6 @@ A Python Package for Probe-based Gene Cluster Finding in Large Microbial Genome 
 - [pipeline-flow](#pipeline-flow)
 - [pre-requirement](#pre-requirement)
 - [usage](#usage)
-- [example](#example)
 
 ---
 
@@ -23,7 +22,7 @@ To evaluate PGCfinder, we used 17 major dcw genes defined by Megrian et al. [1] 
 ### pipeline-flow
 
 <p align="center">
-  <img width="801" alt="flowchart" src="https://github.com/jrim42/pyGCAP/assets/90167645/906905ac-5a58-418f-a3c9-3cc422276480">
+  <img width="1000" alt="flowchart" src="https://github.com/jrim42/pyGCAP/assets/90167645/a39af39e-7961-4e21-b2ab-e1a3c86b1f4a">
 </p>
 
 ---
@@ -74,26 +73,20 @@ To evaluate PGCfinder, we used 17 major dcw genes defined by Megrian et al. [1] 
       - `Prediction` (user defined)
       - `Accession` (UniProt entry)
 
-### options
-### (작성중)
+### (WIP) options
 ```
-—-no
-  vizualization
-  mmseqs2
-
 —-skip 
-  datasets
-  unzip
-  dataformat
+  all
+  ncbi
   mmseqs2
-  uniprot
   parsing
+  uniprot
+  blast
 ```
 
 ---
 
-### example
-### (작성중)
+### (WIP) output
 
 - A directory with the following structure will be created in your `working directory` with the name of the `TAXON` provided as input.
   ```
@@ -116,8 +109,6 @@ To evaluate PGCfinder, we used 17 major dcw genes defined by Megrian et al. [1] 
      └─ ...
   ```
 
+### (WIP) example
 - Profiling _dcw_ genes from pan-genomes of Lactobacillales (LAB)
 
-* Cell wall biosynthesis of LAB (eventually we can check and consider using related genes and proteins; for example, [Table 1](https://microbialcellfactories.biomedcentral.com/articles/10.1186/1475-2859-13-S1-S9/tables/1) in this [reveiw paper](https://microbialcellfactories.biomedcentral.com/articles/10.1186/1475-2859-13-S1-S9))
-  <br>
-  <img width=640 height = 480 src="https://media.springernature.com/lw685/springer-static/image/art%3A10.1186%2F1475-2859-13-S1-S9/MediaObjects/12934_2014_Article_1029_Fig2_HTML.jpg?as=webp">
