@@ -1,4 +1,4 @@
-# pyGCAP: a python Gene Cluster Annotation & Profiling
+# pyGCAP: a (py)thon (G)ene (C)luster (A)nnotation & (P)rofiling
 
 A Python Package for Probe-based Gene Cluster Finding in Large Microbial Genome Database
 
