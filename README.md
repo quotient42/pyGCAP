@@ -29,7 +29,7 @@ To evaluate pyGCAP, we used 17 major dcw genes defined by Megrian et al. [1] as 
 
 ## Pre-requirement
 
-1. `Python`
+1. `Python` >= 3.6
 2. `conda` environment
 
    - `blast` ([bioconda blast package](https://anaconda.org/bioconda/blast))
