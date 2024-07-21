@@ -2,14 +2,14 @@
 
 A Python Package for Probe-based Gene Cluster Finding in Large Microbial Genome Database
 
-- [introduction](#introduction)
-- [pipeline-flow](#pipeline-flow)
-- [pre-requirement](#pre-requirement)
-- [usage](#usage)
+- [Introduction](#Introduction)
+- [Pipeline-flow](#Pipeline-flow)
+- [Pre-requirement](#Pre-requirement)
+- [Usage](#Usage)
 
 ---
 
-### introduction
+## Introduction
 
 Bacterial gene clusters provide insights into metabolism and evolution, and facilitate biotechnological applications. We developed pyGCAP, a Python package for probe-based gene cluster discovery. This pipeline uses sequence search and analysis tools and public databases (e.g. BLAST, MMSeqs2, UniProt, and NCBI) to predict potential gene clusters by user-provided probe genes. We tested the pipeline with the division and cell wall (dcw) gene cluster, crucial for cell division and peptidoglycan biosynthesis.
 
@@ -19,7 +19,7 @@ To evaluate pyGCAP, we used 17 major dcw genes defined by Megrian et al. [1] as 
 
 ---
 
-### pipeline-flow
+## Pipeline-flow
 
 <p align="center">
   <img width="1000" alt="flowchart" src="https://github.com/jrim42/pyGCAP/assets/90167645/a39af39e-7961-4e21-b2ab-e1a3c86b1f4a">
@@ -27,7 +27,7 @@ To evaluate pyGCAP, we used 17 major dcw genes defined by Megrian et al. [1] as 
 
 ---
 
-### pre-requirement
+## Pre-requirement
 
 1. `Python`
 2. `conda` environment
@@ -50,21 +50,24 @@ To evaluate pyGCAP, we used 17 major dcw genes defined by Megrian et al. [1] as 
 
 ---
 
-### usage
+## Usage
+
 - pypi pygcap ([link](https://pypi.org/project/pygcap/))
 
   ```python
   pip install pygcap
   conda activate ncbi_datasets
-  pygcap <working_dir> <TAXON> <probe_file_path>
+  pygcap [WORKING_DIRECTORY] [TAXON] [PROBE_FILE]
   ```
 
 - input argument description
+
   ```python
   ### usage example
   pygcap . Facklamia pygcap/data/probe_sample.tsv
   pygcap . 66831 pygcap/data/probe_sample.tsv
   ```
+
   1.  `working directory`
   2.  `taxon` (both name and taxid are available)
   3.  path of `probe.tsv` ([sample file](https://github.com/jrim42/pyGCAP/blob/main/pygcap/data/probe_sample.tsv))
@@ -73,20 +76,24 @@ To evaluate pyGCAP, we used 17 major dcw genes defined by Megrian et al. [1] as 
       - `Prediction` (user defined)
       - `Accession` (UniProt entry)
 
-### (WIP) options
-```
-—-skip 
-  all
-  ncbi
-  mmseqs2
-  parsing
-  uniprot
-  blast
-```
+### Options
+
+- `--skip`: Specify steps to skip during the process. Multiple steps can be skipped by using this option multiple times.
+
+  - `all`: to skip all processes below
+  - `ncbi`: to skip downloading genome data from `NCBI`
+  - `mmseqs2`: to skip running `MMseqs2`
+  - `parsing`: to skip parsing genome data
+  - `uniprot`: to skip downloading probe data from `Uniprot`
+  - `blastdb`: to skip running `makeblastdb`
+
+  ```
+  pygcap [WORKING_DIRECTORY] [TAXON] [PROBE_FILE] —-skip or -s [ARG]
+  ```
 
 ---
 
-### (WIP) output
+## (WIP)Output
 
 - A directory with the following structure will be created in your `working directory` with the name of the `TAXON` provided as input.
   ```
@@ -109,6 +116,8 @@ To evaluate pyGCAP, we used 17 major dcw genes defined by Megrian et al. [1] as 
      └─ ...
   ```
 
-### (WIP) example
-- Profiling _dcw_ genes from pan-genomes of Lactobacillales (LAB)
+---
 
+## (WIP) example
+
+- Profiling _dcw_ genes from pan-genomes of Lactobacillales (LAB)

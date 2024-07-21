@@ -7,28 +7,24 @@ def main():
     parser.add_argument("TAXON", type=str, help="Taxon identifier")
     parser.add_argument("probe_path", type=str, help="Probe file path")
     
-    parser.add_argument("--skip", nargs='+', help="Options to skip steps, e.g., ncbi mmseqs2 parsing uniprot or all")
+    parser.add_argument("-s", "--skip", action='append', default=[], choices=['ncbi', 'mmseqs2', 'parsing', 'uniprot', 'blastdb', 'all'], help="Options to skip steps, e.g., ncbi, mmseqs2, parsing, uniprot, blastdb or all")
     
     args = parser.parse_args()
     
     skip_options = {
-        'all': False,
         'ncbi': False,
         'mmseqs2': False,
         'parsing': False,
         'uniprot': False,
-        'blast': False,
+        'blastdb': False,
     }
-    if args.skip:
+    
+    if 'all' in args.skip:
+        for key in skip_options.keys():
+            skip_options[key] = True
+    else:
         for opt in args.skip:
-            if opt == 'all':
-                skip_options['ncbi'] = True
-                skip_options['mmseqs2'] = True
-                skip_options['parsing'] = True
-                skip_options['uniprot'] = True
-                skip_options['blast'] = True
-            elif opt in skip_options:
-                skip_options[opt] = True
+            skip_options[opt] = True
     
     find_gene_cluster(
         args.working_dir, 
@@ -38,7 +34,7 @@ def main():
         skip_mmseqs2=skip_options['mmseqs2'],
         skip_uniprot=skip_options['uniprot'],
         skip_parsing=skip_options['parsing'],
-        skip_parsing=skip_options['blast']
+        skip_blastdb=skip_options['blastdb']
     )
 
 if __name__ == "__main__":

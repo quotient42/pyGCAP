@@ -8,7 +8,7 @@ from xml.etree import ElementTree
 from ._utils import sum_assembly_report
 from ._utils import organize_input_dir
 from ._parse import parse_genome
-from ._blast import run_blastp
+from ._blast import run_blast
 from ._count import count_blastp_result
 from ._seqlib import create_seqlib
 from ._search import search_probe
@@ -117,7 +117,7 @@ def process_genome_data(working_dir, TAXON, skip_ncbi, skip_mmseqs2):
 
 def find_gene_cluster(working_dir, TAXON, probe_path, 
                       skip_ncbi=False, skip_mmseqs2=False, 
-                      skip_parsing=False, skip_uniprot=False, skip_blast=False):
+                      skip_parsing=False, skip_uniprot=False, skip_blastdb=False):
     if not os.path.exists(working_dir):
         print("<< Working directory does not exist. Please provide a valid file path.")
         return
@@ -146,8 +146,7 @@ def find_gene_cluster(working_dir, TAXON, probe_path,
         parse_genome(project_info)
     if not skip_uniprot:
         process_probe_data(project_info, probe_path)
-    if not skip_blast:
-        run_blastp(project_info)
+    run_blast(project_info, skip_blastdb)
     count_blastp_result(project_info)
 
     create_seqlib(project_info)
