@@ -6,6 +6,7 @@ A Python Package for Probe-based Gene Cluster Finding in Large Microbial Genome 
 - [Pipeline-flow](#Pipeline-flow)
 - [Pre-requirement](#Pre-requirement)
 - [Usage](#Usage)
+- [Output](#Output)
 
 ---
 
@@ -107,7 +108,7 @@ To evaluate pyGCAP, we used 17 major dcw genes defined by Megrian et al. [1] as 
    pygcap [TAXON] [PROBE_FILE] —-identity or -i [PROTEIN_IDENTITY]
    ```
 
-4. `--skip` of `-s` (default: `none`): Specify steps to skip during the process. Multiple steps can be skipped by using this option multiple times.
+4. `--skip` of `-s` (default: `none`): Specify steps to skip during the process. Multiple steps can be skipped by using this option multiple times. This option is useful when you want to add a new probe to the same TAXON as before or when you want to change the identity option for MMseqs2.
 
    ```
    pygcap [TAXON] [PROBE_FILE] —-skip or -s [ARG]
@@ -122,7 +123,7 @@ To evaluate pyGCAP, we used 17 major dcw genes defined by Megrian et al. [1] as 
 
 ---
 
-## (WIP)Output
+## Output
 
 - A directory with the following structure will be created in your `working directory` with the name of the `TAXON` provided as input.\
 
@@ -146,8 +147,18 @@ To evaluate pyGCAP, we used 17 major dcw genes defined by Megrian et al. [1] as 
      └─ ...
   ```
 
----
+### Example
 
-## (WIP) example
+Profiling _dcw_ genes from pan-genomes of Lactobacillales (LAB)
+- The following are some of the result data you can obtain through this pipeline:
+  - `working_directory/TAXON/output/img`: A heatmap representing the dcw gene contents of Lactobacillales at the genus level.
 
-- Profiling _dcw_ genes from pan-genomes of Lactobacillales (LAB)
+    <p align="center">
+      <img width="1000" alt="example1" src="https://github.com/user-attachments/assets/9a2a3161-26d8-4e76-b4ea-f7ab56256583">
+    </p>
+
+  - `working_directory/TAXON/output/geus`: A plot visualizing the dcw gene order of Lactobacillales grouped by genus.
+   
+    <p align="center">
+      <img width="1000" alt="example2" src="https://github.com/user-attachments/assets/f9a3fd2f-b636-4171-a5cb-257062ebd1f0">
+    </p>
