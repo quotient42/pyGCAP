@@ -65,10 +65,6 @@ def _process_and_save_summary(project_info, raw_df):
 
     df = df.sort_values(by='Organism Name').reset_index(drop=True)
     df.rename(columns={'Assembly Accession': 'Accession'}, inplace=True)
-    # df = df[['Assembly Accession', 'Genus', 'Species', 'Assembly Stats Total Sequence Length', 
-            #  'CheckM completeness', 'CheckM contamination', 'Annotation Count Gene Total', 'Organism Name']]
-    # df.columns = ['Accession', 'Genus', 'Species', 'Seq Length', 'Completeness', 'Contamination', 'Annotation Count Gene', 'Name']
-
     df.to_csv(f"{project_info['output']}/tsv/assembly_report_sum.tsv", sep='\t', index=False)
 
     genus = df['Genus']

@@ -4,13 +4,10 @@ import os
 import subprocess
 
 #===============================================================================
-def run_blast(project_info, skip_blastdb):
+def run_blast(project_info, thread):
     start_time = time.time()
 
-    create_input_fasta(project_info)
-    if not skip_blastdb:
-        make_blastdb(project_info)
-    run_blastp(project_info)   
+    run_blastp(project_info, thread)   
     split_blast_result(project_info)  
 
     end_time = time.time()
@@ -18,65 +15,7 @@ def run_blast(project_info, skip_blastdb):
     print(f"   └── blastp complete (elapsed time: {round(total / 60, 3)} min)")
 
 #===============================================================================
-def create_input_fasta(project_info):
-    print("<< creating input FASTA...")
-    input_dir = project_info['input']
-    seqlib_dir = project_info['seqlib']
-    all_directories = [d for d in os.listdir(input_dir) if os.path.isdir(os.path.join(input_dir, d))]
-    all_directories = [d for d in all_directories if d != 'output' and not d.startswith('output/')]
-
-    for genus in all_directories:
-        for accession in os.listdir(os.path.join(input_dir, genus)):
-            if not "GC" in accession:
-                continue
-            
-            cur_dir = f"{input_dir}/{genus}/{accession}"
-
-            with open(f"{cur_dir}/genome_summary.tsv", 'r', encoding='utf-8') as file:
-                lines = file.readlines()
-                species = lines[1][1:].strip()
-                binomial1 = species.split(" ")[0]
-                binomial2 = species.split(" ")[1]
-
-            genome_summary_df = pd.read_csv(f"{cur_dir}/genome_summary.tsv", sep='\t', comment='#')
-            input_info = [accession, cur_dir, species]
-
-            output_file = f"{cur_dir}/{accession}.fasta"
-            with open(output_file, 'w') as fasta_file:
-                for index, row in genome_summary_df.iterrows():
-                    protein_id = row['protein_id']
-                    gene = row['gene']
-                    product = row['product']
-                    translation = row['translation']
-
-                    fasta_file.write(f">{protein_id}|{accession}|{binomial1}_{binomial2} {gene} {product} [{species}]\n")
-                    
-                    for i in range(0, len(translation), 50):
-                        fasta_file.write(f"{translation[i:i+50]}\n")
-
-            with open(output_file, 'r') as fasta_file:
-                fasta_content = fasta_file.read()
-                with open(f'{seqlib_dir}/all.fasta', 'a') as all_fasta_file:
-                    all_fasta_file.write(fasta_content)
-
-#===============================================================================
-def make_blastdb(project_info):
-    print("<< making blastdb...")
-    db_path = f"{project_info['seqlib']}/lacto.aa"
-    data_path = f"{project_info['seqlib']}/all.fasta"
-
-    makeblastdb_command = [
-        'makeblastdb',
-        '-in', data_path,
-        '-dbtype', 'prot',
-        '-hash_index',
-        '-out', db_path,
-        '-title', '"LAB ncbi protein DB"'
-    ]
-
-    subprocess.run(makeblastdb_command)
-
-def run_blastp(project_info):
+def run_blastp(project_info, thread):
     print("<< running blastp...")
     db_path = f"{project_info['seqlib']}/lacto.aa"
     probe_path = f"{project_info['data']}/probe.fasta"
@@ -90,6 +29,7 @@ def run_blastp(project_info):
         '-evalue', "0.001",
         '-outfmt', '6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore',
         '-out', output1_path,
+        '-num_threads', str(thread),
     ]
 
     subprocess.run(blastp_command)
@@ -139,11 +79,6 @@ def split_blast_result(project_info):
             matching_rows = matching_rows.drop(columns=['orgid', 'orgname'])
             matching_rows = matching_rows.sort_values(by='qseqid')
 
-            # with open(f"{cur_dir}/probe_blast.tsv", 'w', encoding='utf-8') as blast_file:
-            #     blast_file.write(f"# {accession}\n")
-            #     blast_file.write(f"# {species}\n")
-            #     matching_rows.to_csv(blast_file, sep='\t', index=False)
-
             genome_summary = pd.read_csv(f"{cur_dir}/genome_summary.tsv", sep='\t', comment='#')
             merged_df = pd.merge(matching_rows, genome_summary, left_on='sseqid', right_on='protein_id', how='inner')
             merged_df = merged_df.rename(columns={'qseqid': 'TarName'})
@@ -159,3 +94,61 @@ def split_blast_result(project_info):
                 blast_file.write(f"# {accession}\n# {species}\n")
                 merged_df.to_csv(blast_file, sep='\t', index=False)
                 
+#===============================================================================
+def create_input_fasta(project_info):
+    print("<< creating input FASTA...")
+    input_dir = project_info['input']
+    seqlib_dir = project_info['seqlib']
+    all_directories = [d for d in os.listdir(input_dir) if os.path.isdir(os.path.join(input_dir, d))]
+    all_directories = [d for d in all_directories if d != 'output' and not d.startswith('output/')]
+
+    for genus in all_directories:
+        for accession in os.listdir(os.path.join(input_dir, genus)):
+            if not "GC" in accession:
+                continue
+            
+            cur_dir = f"{input_dir}/{genus}/{accession}"
+
+            with open(f"{cur_dir}/genome_summary.tsv", 'r', encoding='utf-8') as file:
+                lines = file.readlines()
+                species = lines[1][1:].strip()
+                binomial1 = species.split(" ")[0]
+                binomial2 = species.split(" ")[1]
+
+            genome_summary_df = pd.read_csv(f"{cur_dir}/genome_summary.tsv", sep='\t', comment='#')
+            input_info = [accession, cur_dir, species]
+
+            output_file = f"{cur_dir}/{accession}.fasta"
+            with open(output_file, 'w') as fasta_file:
+                for index, row in genome_summary_df.iterrows():
+                    protein_id = row['protein_id']
+                    gene = row['gene']
+                    product = row['product']
+                    translation = row['translation']
+
+                    fasta_file.write(f">{protein_id}|{accession}|{binomial1}_{binomial2} {gene} {product} [{species}]\n")
+                    
+                    for i in range(0, len(translation), 50):
+                        fasta_file.write(f"{translation[i:i+50]}\n")
+
+            with open(output_file, 'r') as fasta_file:
+                fasta_content = fasta_file.read()
+                with open(f'{seqlib_dir}/all.fasta', 'a') as all_fasta_file:
+                    all_fasta_file.write(fasta_content)
+
+def make_blastdb(project_info, thread):
+    print("<< making blastdb...")
+    create_input_fasta(project_info)
+    db_path = f"{project_info['seqlib']}/lacto.aa"
+    data_path = f"{project_info['seqlib']}/all.fasta"
+
+    makeblastdb_command = [
+        'makeblastdb',
+        '-in', data_path,
+        '-dbtype', 'prot',
+        '-hash_index',
+        '-out', db_path,
+        '-title', f"{project_info['project_name']} DB",
+    ]
+
+    subprocess.run(makeblastdb_command)
