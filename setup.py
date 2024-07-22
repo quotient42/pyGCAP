@@ -1,9 +1,13 @@
 from setuptools import setup, find_packages
 
+with open('README.md', encoding='utf-8') as f:
+    long_description = f.read()
 setup(
     name='pygcap',
-    version='0.0.7',
+    version='1.0.1',
     description='Python package for probe-based gene cluster finding in large microbial genome database',
+	long_description=long_description,
+    long_description_content_type='text/markdown',
     author='jsrim',
     author_email='comfortindex@naver.com',
     url='https://github.com/jrim42/pyGCAP',
