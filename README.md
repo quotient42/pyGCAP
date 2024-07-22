@@ -29,7 +29,7 @@ To evaluate pyGCAP, we used 17 major dcw genes defined by Megrian et al. [1] as 
 
 ## Pre-requirement
 
-1. `Python`
+1. `Python` >= 3.6
 2. `conda` environment
 
    - `blast` ([bioconda blast package](https://anaconda.org/bioconda/blast))
@@ -79,23 +79,23 @@ To evaluate pyGCAP, we used 17 major dcw genes defined by Megrian et al. [1] as 
 ### Options
 
 - `--skip`: Specify steps to skip during the process. Multiple steps can be skipped by using this option multiple times.
-
-  - `all`: to skip all processes below
-  - `ncbi`: to skip downloading genome data from `NCBI`
-  - `mmseqs2`: to skip running `MMseqs2`
-  - `parsing`: to skip parsing genome data
-  - `uniprot`: to skip downloading probe data from `Uniprot`
-  - `blastdb`: to skip running `makeblastdb`
-
+  
   ```
-  pygcap [WORKING_DIRECTORY] [TAXON] [PROBE_FILE] —-skip or -s [ARG]
+    pygcap [WORKING_DIRECTORY] [TAXON] [PROBE_FILE] —-skip or -s [ARG]
   ```
+  - `all`: Skip all the processes listed below.
+  - `ncbi`: Skip downloading genome data from NCBI.
+  - `mmseqs2`: Skip running MMseqs2.
+  - `parsing`: Skip parsing genome data.
+  - `uniprot`: Skip downloading probe data from UniProt.
+  - `blastdb`: Skip running makeblastdb.
 
 ---
 
 ## (WIP)Output
 
-- A directory with the following structure will be created in your `working directory` with the name of the `TAXON` provided as input.
+- A directory with the following structure will be created in your `working directory` with the name of the `TAXON` provided as input.\
+  
   ```
   📦 [TAXON_NAME]
   ├─ data
