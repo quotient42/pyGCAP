@@ -55,6 +55,7 @@ To evaluate pyGCAP, we used 17 major dcw genes defined by Megrian et al. [1] as 
 
      ```
      conda create -n pygcap
+     conda activate pygcap
      pip install pygcap
      conda install -c conda-forge ncbi-datasets-cli
      conda install -c conda-forge -c bioconda mmseqs2
