@@ -23,8 +23,9 @@ To evaluate pyGCAP, we used 17 major dcw genes defined by Megrian et al. [1] as 
 ## Pipeline-flow
 
 <p align="center">
-  <img width="1000" alt="flowchart" src="https://github.com/jrim42/pyGCAP/assets/90167645/a39af39e-7961-4e21-b2ab-e1a3c86b1f4a">
+  <img width="1000" alt="flowchart" src="https://github.com/user-attachments/assets/30df5e15-1b55-490a-b209-2d798f10b4b3">
 </p>
+
 
 ---
 
