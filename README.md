@@ -162,7 +162,7 @@ Profiling _dcw_ genes from pan-genomes of Lactobacillales (LAB)
   - `working_directory/TAXON/output/img`: A heatmap representing the dcw gene contents of Lactobacillales at the genus level.
 
     <p align="center">
-      <img width="1000" alt="example1" src="https://github.com/user-attachments/assets/9a2a3161-26d8-4e76-b4ea-f7ab56256583">
+      <img width="1000" alt="example1" src="https://github.com/user-attachments/assets/bf79df79-8dd5-48a0-b431-5d3b13cf48bf">
     </p>
 
   - `working_directory/TAXON/output/geus`: A plot visualizing the dcw gene order of Lactobacillales grouped by genus.
