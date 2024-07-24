@@ -4,7 +4,7 @@ with open('README.md', encoding='utf-8') as f:
     long_description = f.read()
 setup(
     name='pygcap',
-    version='1.1.6',
+    version='1.2.1',
     description='Python package for probe-based gene cluster finding in large microbial genome database',
 	long_description=long_description,
     long_description_content_type='text/markdown',

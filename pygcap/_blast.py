@@ -4,10 +4,10 @@ import os
 import subprocess
 
 #===============================================================================
-def run_blast(project_info, thread):
+def run_blast(project_info, thread, max_target_seqs):
     start_time = time.time()
 
-    run_blastp(project_info, thread)   
+    run_blastp(project_info, thread,max_target_seqs)   
     split_blast_result(project_info)  
 
     end_time = time.time()
@@ -15,7 +15,7 @@ def run_blast(project_info, thread):
     print(f"   └── blastp complete (elapsed time: {round(total / 60, 3)} min)")
 
 #===============================================================================
-def run_blastp(project_info, thread):
+def run_blastp(project_info, thread, max_target_seqs):
     print("<< running blastp...")
     db_path = f"{project_info['seqlib']}/lacto.aa"
     probe_path = f"{project_info['data']}/probe.fasta"
@@ -30,6 +30,7 @@ def run_blastp(project_info, thread):
         '-outfmt', '6 qseqid sseqid pident length mismatch gapopen qstart qend sstart send evalue bitscore',
         '-out', output1_path,
         '-num_threads', str(thread),
+        '-max_target_seqs', str(max_target_seqs),
     ]
 
     subprocess.run(blastp_command)

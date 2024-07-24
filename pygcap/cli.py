@@ -70,6 +70,7 @@ def main():
     parser.add_argument("-w", "--working_dir", type=str, default=".", help="Working directory path")
     parser.add_argument("-t", "--thread", type=int, default=50, help="")
     parser.add_argument("-i", "--identity", type=int, default=0.5, help="")
+    parser.add_argument("-m", "--max_target_seqs", type=int, default=500, help="")
     parser.add_argument("-s", "--skip", action='append', default=[], choices=['ncbi', 'mmseqs2', 'parsing', 'uniprot', 'blastdb', 'all'], help="Options to skip steps, e.g., ncbi, mmseqs2, parsing, uniprot, blastdb or all")
     
     args = parser.parse_args()
@@ -81,6 +82,9 @@ def main():
         exit(1)
     if args.identity < 0.4:
         print("Identity must be a value between 0 and 1.")
+        exit(1)
+    if args.max_target_seqs < 1:
+        print("Max target seqs must be an integer greater than 0.")
         exit(1)
 
     skip_options = {
@@ -105,6 +109,7 @@ def main():
         args.working_dir, 
         args.thread,
         args.identity,
+        args.max_target_seqs,
         skip_ncbi=skip_options['ncbi'],
         skip_mmseqs2=skip_options['mmseqs2'],
         skip_uniprot=skip_options['uniprot'],

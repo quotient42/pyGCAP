@@ -83,7 +83,7 @@ def organize_directory(dir_info):
         os.mkdir(seqlib_dir)
 
 def find_gene_cluster(TAXON, taxid, probe_path,
-                      working_dir=".", thread=55, identity=0.5, 
+                      working_dir=".", thread=55, identity=0.5, max_target_seqs=500,
                       skip_ncbi=False, skip_mmseqs2=False, 
                       skip_parsing=False, skip_uniprot=False, skip_blastdb=False):
     print(f"<< TAXON info: {TAXON} [taxid={taxid}]")
@@ -116,7 +116,7 @@ def find_gene_cluster(TAXON, taxid, probe_path,
     if not skip_blastdb:
         make_blastdb(dir_info, thread)
 
-    run_blast(dir_info, thread)
+    run_blast(dir_info, thread, max_target_seqs)
     count_blastp_result(dir_info)
 
     create_seqlib(dir_info)
