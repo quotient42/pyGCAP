@@ -107,7 +107,13 @@ To evaluate pyGCAP, we used 17 major dcw genes defined by Megrian et al. [1] as 
    pygcap [TAXON] [PROBE_FILE] —-identity or -i [PROTEIN_IDENTITY]
    ```
 
-4. `--skip` of `-s` (default: `none`): Specify steps to skip during the process. Multiple steps can be skipped by using this option multiple times.
+4. `--max_target_seqs` of `-m` (default: `500`): The vaue of aligned sequences to retain in the overall BLASTP results. It must be an integergreater than 0.
+
+   ```
+   pygcap [TAXON] [PROBE_FILE] —-max_target_seqs or -m [MAX_TARGET]
+   ```
+
+5. `--skip` of `-s` (default: `none`): Specify steps to skip during the process. Multiple steps can be skipped by using this option multiple times.
 
    ```
    pygcap [TAXON] [PROBE_FILE] —-skip or -s [ARG]
