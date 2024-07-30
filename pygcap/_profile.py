@@ -2,6 +2,7 @@ import pandas as pd
 import os
 from ._visualize import visualize_heatmap
 
+#===============================================================================
 def final_profile(project_info):
 	input_dir = project_info['input']
 	seqlib_dir = project_info['seqlib']
@@ -16,6 +17,8 @@ def final_profile(project_info):
 	all_repnames = ['accession', 'name'] + seqlib_repnames + acclib_repnames
 
 	profile = pd.DataFrame(columns=all_repnames)
+	profile = profile.astype({col: 'int64' for col in profile.columns if col not in ['accession', 'name']})
+	profile = profile.astype({'accession': 'str', 'name': 'str'})
 
 	all_directories = [d for d in os.listdir(input_dir) if os.path.isdir(os.path.join(input_dir, d))]
 	all_directories = [d for d in all_directories if d != 'output' and not d.startswith('output/')]
@@ -33,9 +36,7 @@ def final_profile(project_info):
 
 					probe_final = pd.read_csv(f"{cur_dir}/probe_final.tsv", sep='\t', comment='#')
 
-					new_row = pd.Series(0, index=profile.columns)
-            
-					new_row['accession'] = new_row['accession'].astype(str)
+					new_row = {col: 0 for col in profile.columns}
 					new_row['accession'] = accession
 					new_row['name'] = species
 					

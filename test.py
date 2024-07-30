@@ -1,3 +1,3 @@
 from pygcap import main
 
-main.find_gene_cluster(".", "Lactobacillales", "./pygcap/data/probe_sample.tsv")
+main.find_gene_cluster("Facklamia", 66831, "./pygcap/data/probe_sample.tsv")

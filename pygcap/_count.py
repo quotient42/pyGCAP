@@ -15,6 +15,8 @@ import time
 from ._visualize import visualize_heatmap
 from ._visualize import visualize_freq
 
+pd.set_option('future.no_silent_downcasting', True)
+
 #===============================================================================
 def count_blastp_result(project_info):
     output_dir = project_info['output']
